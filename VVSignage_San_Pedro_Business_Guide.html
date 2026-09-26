@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VVSignage San Pedro - Complete Business & Launch Playbook</title>
+  <style>
+    :root {
+      --color-primary: #0284c7;
+      --color-primary-dark: #0369a1;
+      --color-primary-light: #e0f2fe;
+      --color-accent: #f59e0b;
+      --color-accent-light: #fef3c7;
+      --color-success: #10b981;
+      --color-success-light: #d1fae5;
+      --color-dark: #0f172a;
+      --color-gray-dark: #334155;
+      --color-gray-medium: #64748b;
+      --color-gray-light: #f1f5f9;
+      --color-border: #cbd5e1;
+      --color-card-bg: #ffffff;
+      --color-bg: #f8fafc;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --spacing-unit: 8px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    @page {
+      size: letter;
+      margin: 12mm 10mm 12mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      color: var(--color-gray-dark);
+      background-color: var(--color-bg);
+      line-height: 1.45;
+      font-size: 12px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      background: var(--color-card-bg);
+      padding: calc(var(--spacing-unit) * 2.5);
+      margin-bottom: calc(var(--spacing-unit) * 3);
+      border-radius: 8px;
+      page-break-after: always;
+    }
+
+    .page:last-child {
+      page-break-after: avoid;
+      margin-bottom: 0;
+    }
+
+    header.doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid var(--color-primary);
+      padding-bottom: calc(var(--spacing-unit) * 1.5);
+      margin-bottom: calc(var(--spacing-unit) * 2);
+    }
+
+    .logo-area h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--color-dark);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-area h1 span {
+      color: var(--color-primary);
+    }
+
+    .logo-area p {
+      font-size: 11px;
+      color: var(--color-gray-medium);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: calc(var(--spacing-unit) * 0.5);
+    }
+
+    .badge-header {
+      background: var(--color-primary-light);
+      color: var(--color-primary-dark);
+      padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit) * 1.5);
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-align: right;
+      border: 1px solid var(--color-primary);
+    }
+
+    h2.section-title {
+      font-size: 15px;
+      color: var(--color-dark);
+      margin-top: calc(var(--spacing-unit) * 1.5);
+      margin-bottom: calc(var(--spacing-unit) * 1);
+      display: flex;
+      align-items: center;
+      gap: calc(var(--spacing-unit) * 1);
+      border-left: 4px solid var(--color-primary);
+      padding-left: calc(var(--spacing-unit) * 1);
+    }
+
+    h3.sub-title {
+      font-size: 12.5px;
+      color: var(--color-primary-dark);
+      margin-top: calc(var(--spacing-unit) * 1);
+      margin-bottom: calc(var(--spacing-unit) * 0.5);
+      font-weight: 700;
+    }
+
+    p {
+      margin-bottom: calc(var(--spacing-unit) * 0.75);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: calc(var(--spacing-unit) * 0.75);
+      margin-bottom: calc(var(--spacing-unit) * 1.5);
+      font-size: 11px;
+    }
+
+    th, td {
+      padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit) * 1);
+      text-align: left;
+      border: 1px solid var(--color-border);
+    }
+
+    th {
+      background-color: var(--color-gray-light);
+      color: var(--color-dark);
+      font-weight: 700;
+      font-size: 10.5px;
+      text-transform: uppercase;
+    }
+
+    tr:nth-child(even) {
+      background-color: #fafbfd;
+    }
+
+    .highlight-cell {
+      font-weight: 700;
+      color: var(--color-primary-dark);
+    }
+
+    /* Cards & Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 1.5);
+      margin-bottom: calc(var(--spacing-unit) * 1.5);
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: calc(var(--spacing-unit) * 1);
+      margin-bottom: calc(var(--spacing-unit) * 1.5);
+    }
+
+    .card {
+      background: var(--color-gray-light);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: calc(var(--spacing-unit) * 1.25);
+    }
+
+    .card.primary {
+      background: var(--color-primary-light);
+      border-color: var(--color-primary);
+    }
+
+    .card.accent {
+      background: var(--color-accent-light);
+      border-color: var(--color-accent);
+    }
+
+    .card.success {
+      background: var(--color-success-light);
+      border-color: var(--color-success);
+    }
+
+    .card h4 {
+      font-size: 12px;
+      color: var(--color-dark);
+      margin-bottom: calc(var(--spacing-unit) * 0.25);
+      font-weight: 700;
+    }
+
+    .card p {
+      font-size: 10.5px;
+      margin-bottom: 0;
+      color: var(--color-gray-dark);
+    }
+
+    /* Callout Boxes */
+    .callout {
+      border-radius: 6px;
+      padding: calc(var(--spacing-unit) * 1.25);
+      margin-top: calc(var(--spacing-unit) * 1);
+      margin-bottom: calc(var(--spacing-unit) * 1);
+      font-size: 11px;
+    }
+
+    .callout-tip {
+      background: var(--color-success-light);
+      border-left: 4px solid var(--color-success);
+      color: #065f46;
+    }
+
+    .callout-info {
+      background: var(--color-primary-light);
+      border-left: 4px solid var(--color-primary);
+      color: #0369a1;
+    }
+
+    /* Script Blocks */
+    .script-box {
+      background: #f8fafc;
+      border: 1px dashed var(--color-primary);
+      border-radius: 6px;
+      padding: calc(var(--spacing-unit) * 1);
+      margin-top: calc(var(--spacing-unit) * 0.5);
+      margin-bottom: calc(var(--spacing-unit) * 1);
+      font-style: italic;
+      color: #1e293b;
+      font-size: 11px;
+    }
+
+    /* Steps */
+    .step-item {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 1);
+      margin-bottom: calc(var(--spacing-unit) * 1);
+      align-items: flex-start;
+    }
+
+    .step-num {
+      background: var(--color-primary);
+      color: #ffffff;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      font-size: 11px;
+    }
+
+    .step-content strong {
+      color: var(--color-dark);
+      font-size: 11.5px;
+    }
+
+    /* Agreement Form */
+    .agreement-container {
+      border: 2px solid var(--color-dark);
+      border-radius: 6px;
+      padding: calc(var(--spacing-unit) * 1.5);
+      background: #ffffff;
+      font-size: 10.5px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: calc(var(--spacing-unit) * 2);
+      margin-bottom: calc(var(--spacing-unit) * 1);
+    }
+
+    .form-field {
+      flex: 1;
+      border-bottom: 1px solid #64748b;
+      padding-bottom: 2px;
+    }
+
+    .form-field span {
+      font-weight: 700;
+      color: var(--color-dark);
+    }
+
+    .footer-doc {
+      margin-top: calc(var(--spacing-unit) * 2);
+      padding-top: calc(var(--spacing-unit) * 1);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      font-size: 9.5px;
+      color: var(--color-gray-medium);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1: EXECUTIVE OVERVIEW & PRICING ==================== -->
+  <main class="page">
+    <header class="doc-header">
+      <div class="logo-area">
+        <h1>VV<span>Signage</span> Belize</h1>
+        <p>San Pedro & Ambergris Caye Business & Launch Playbook</p>
+      </div>
+      <div class="badge-header">
+        Location: Ambergris Caye, Belize<br>
+        Currency: BZD ($1 USD = $2 BZD)
+      </div>
+    </header>
+
+    <section>
+      <h2 class="section-title">1. Executive Overview & Island Market Fit</h2>
+      <p>
+        <strong>VVSignage</strong> is a modern, high-reliability Digital Signage CMS tailored for the unique infrastructure of San Pedro, Belize. Built to withstand frequent island internet drops with <strong>100% Offline-First Local Storage</strong> and instant <strong>Tablet Remote Overrides</strong>, it solves major marketing, communication, and menu challenges for tourism-driven businesses.
+      </p>
+      
+      <div class="grid-3">
+        <div class="card primary">
+          <h4>100% Offline Playback</h4>
+          <p>Videos and playlists are stored locally on the TV. If BTL/Smart Wi-Fi goes down, displays loop seamlessly with zero black screens.</p>
+        </div>
+        <div class="card accent">
+          <h4>Tablet Instant Overrides</h4>
+          <p>Floor staff can tap one button to trigger "Boat Boarding", "Flight Delay", or "Happy Hour Special" without touching a computer.</p>
+        </div>
+        <div class="card success">
+          <h4>Proof-of-Play Reports</h4>
+          <p>Detailed log reports show exact play counts, allowing transportation hubs and venues to sell high-margin ad space to local sponsors.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">2. Software Subscription & Hardware Pricing</h2>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Plan Tier</th>
+            <th>Monthly (BZD / USD)</th>
+            <th>Annual Pre-Paid</th>
+            <th>Target Venues</th>
+            <th>Core Inclusions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="highlight-cell">Community / Micro-Biz</td>
+            <td><strong>$20 BZD</strong> / $10 USD</td>
+            <td>$200 BZD / yr</td>
+            <td>Taco stands, food shacks, golf cart booths, artisans</td>
+            <td>1 Screen License, <strong>WhatsApp Menu Concierge</strong>, Google Review QR, Low-Season Freeze.</td>
+          </tr>
+          <tr>
+            <td class="highlight-cell">Starter Tier</td>
+            <td><strong>$24 BZD</strong> / $12 USD</td>
+            <td>$240 BZD / yr</td>
+            <td>Single dive shop, boutique retail, small cafe</td>
+            <td>Full CMS access, Weather & RSS widgets, 2GB Storage, Canvas Editor, 1 Admin User.</td>
+          </tr>
+          <tr>
+            <td class="highlight-cell">Pro Tier <em>(Top Seller)</em></td>
+            <td><strong>$38 BZD</strong> / $19 USD</td>
+            <td>$380 BZD / yr</td>
+            <td>Hotels, busy restaurants, tour brokers</td>
+            <td><strong>Tablet Remote Override App</strong>, <strong>Proof-of-Play Ad Logs</strong>, Web Embeds, 10GB Cloud Storage.</td>
+          </tr>
+          <tr>
+            <td class="highlight-cell">Enterprise / Network</td>
+            <td><strong>$30 BZD</strong> / $15 USD <small>(5+ screens)</small></td>
+            <td>$300 BZD / screen/yr</td>
+            <td>Water Taxis (SPBE/Ocean Ferry), Airlines, Resorts</td>
+            <td>Dedicated instance, full security audit logs, priority on-island 24/7 support, custom widgets.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 class="sub-title">Hardware & Setup Options</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Cost (BZD / USD)</th>
+            <th>Inclusions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>BYOD Setup (Existing Android TV)</strong></td>
+            <td><strong>$100 BZD</strong> / $50 USD</td>
+            <td>App installation via USB, device pairing, first custom playlist creation, 30-min staff training.</td>
+          </tr>
+          <tr>
+            <td><strong>Turnkey Media Stick</strong></td>
+            <td><strong>$250 BZD</strong> / $125 USD</td>
+            <td>Pre-configured 4K Android TV Stick + HDMI/power cables + account provisioning + branding setup.</td>
+          </tr>
+          <tr>
+            <td><strong>Small Biz Tablet / Loaner Stick</strong></td>
+            <td><strong>$25 BZD Deposit</strong></td>
+            <td>Low-barrier entry for street food and micro-vendors; uses an affordable tablet or refurbished stick.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="footer-doc">
+      <span>VVSignage Belize Master Sales Playbook</span>
+      <span>Confidential - For Internal Field Deployment</span>
+      <span>Page 1 of 4</span>
+    </footer>
+  </main>
+
+  <!-- ==================== PAGE 2: SMALL BIZ SUITE & AD NETWORK ==================== -->
+  <main class="page">
+    <header class="doc-header">
+      <div class="logo-area">
+        <h1>Small Business Suite & Ad Network</h1>
+        <p>High-Impact Community Programs & Alternative Monetization</p>
+      </div>
+      <div class="badge-header">
+        Model B: Ad Monetization<br>
+        Revenue: Up to $900 BZD/screen/mo
+      </div>
+    </header>
+
+    <section>
+      <h2 class="section-title">3. Small Business Empowerment Suite ("Beyond the Screen")</h2>
+      <p>Local mom-and-pop businesses on Ambergris Caye lack time and graphic design skills. We bundle high-value, done-for-you services into their $30 BZD/mo Community Plan:</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h4>1. WhatsApp Menu Concierge</h4>
+          <p>Vendors take a photo of their daily specials or send a voice note (<em>"Conch soup today for $15 BZD"</em>). We update their graphics in Canvas within 5 minutes.</p>
+        </div>
+        <div class="card">
+          <h4>2. Tourist-Ready QR Bundle (Free)</h4>
+          <p>On-screen QR codes for <strong>Google Maps Reviews</strong> (boosting tourist walk-ins), <strong>DigiWallet / E-kyash Cashless Pay</strong>, and <strong>Instant Guest Wi-Fi</strong>.</p>
+        </div>
+        <div class="card">
+          <h4>3. Low-Season Freeze Protection</h4>
+          <p>During the slow hurricane months (September & October), micro-businesses can freeze subscription fees for up to 60 days at zero penalty.</p>
+        </div>
+        <div class="card">
+          <h4>4. Co-Op Neighbor Screen Hubs</h4>
+          <p>Adjacent vendors (e.g., a golf cart shack + taco stand + souvenir booth) can share one outdoor screen and split the cost at <strong>$10 BZD each/month</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">4. Turnkey Ad-Network Model (The "Host & Monetize" Strategy)</h2>
+      <p>
+        For high-traffic hubs (Water Taxi docks, San Pedro Airstrip cafes, Central Park hot spots) that prefer a free setup, we deploy screens at zero software cost and monetize the airtime.
+      </p>
+
+      <div class="callout callout-info">
+        <strong>The 2-Minute Screen Loop Structure:</strong><br>
+        • <strong>60 Seconds:</strong> Host Venue Content (Boat schedules, flight updates, welcome boards, house specials).<br>
+        • <strong>60 Seconds:</strong> Paid Advertising (6 non-competing sponsor slots @ 10 seconds each).
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Advertising Package</th>
+            <th>Frequency / Play Count</th>
+            <th>Monthly Rate (BZD)</th>
+            <th>Monthly Revenue (6 Slots)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Standard Sponsor Slot (10s)</strong></td>
+            <td>Plays every 2 minutes (30x / hour = 360x / day)</td>
+            <td><strong>$150 BZD</strong> / month</td>
+            <td><strong>$900 BZD / screen</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Local Artisan Slot (10s)</strong></td>
+            <td>Plays every 4 minutes (15x / hour = 180x / day)</td>
+            <td><strong>$75 BZD</strong> / month</td>
+            <td>Targeted at micro-businesses & local tours</td>
+          </tr>
+          <tr>
+            <td><strong>Host Venue Revenue Share</strong></td>
+            <td>Host receives 30% of ad revenue or free CMS</td>
+            <td>-</td>
+            <td>Host earns <strong>$270 - $400 BZD / mo</strong> passively</td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div class="callout callout-tip">
+        <strong>Ad Sales Pitch to Local Advertisers:</strong> <em>"Reach over 1,500 tourists daily while they wait for their water taxi or flight. For only $5 BZD a day ($150 BZD/month), your restaurant or dive shop is shown 360 times a day directly in front of captive travelers with suitcases!"</em>
+      </div>
+    </section>
+
+    <footer class="footer-doc">
+      <span>VVSignage Belize Master Sales Playbook</span>
+      <span>Confidential - For Internal Field Deployment</span>
+      <span>Page 2 of 4</span>
+    </footer>
+  </main>
+
+  <!-- ==================== PAGE 3: SECTOR SCRIPTS & DEMO BLUEPRINT ==================== -->
+  <main class="page">
+    <header class="doc-header">
+      <div class="logo-area">
+        <h1>Sector Playbooks & Live Demo</h1>
+        <p>Field Scripts, Objection Handling & The 10-Minute Demo</p>
+      </div>
+      <div class="badge-header">
+        Action: Field Selling<br>
+        Method: "Stick & Show"
+      </div>
+    </header>
+
+    <section>
+      <h2 class="section-title">5. Sector-by-Sector Word-for-Word Pitch Scripts</h2>
+
+      <h3 class="sub-title">A. Water Taxis & Airlines (SP Belize Express / Ocean Ferry / Tropic / Maya Air)</h3>
+      <div class="script-box">
+        "Good morning [Name]. Passengers are constantly crowding the counter asking if boats/flights are on schedule. With VVSignage, your staff can tap one button on a tablet to display 'BOARDING NOW' or 'WEATHER DELAY' across all screens. When not in alert mode, it plays departure schedules and generates thousands in local ad revenue. Best of all, if the island's Wi-Fi drops, the screens never go black. Can I show you a 60-second test on that TV?"
+      </div>
+
+      <h3 class="sub-title">B. Dive Shops & Tour Desks (Amigos del Mar, Belize Pro Dive, Chuck & Robbie's)</h3>
+      <div class="script-box">
+        "Hey [Name]. Video sells diving 10x better than paper brochures. When tourists walk past your dock and see 4K footage of swimming with nurse sharks at Hol Chan, they stop and book. Our system loops your best GoPro footage and tomorrow's departures. Because island Wi-Fi can be patchy along the water, our app saves everything locally so it never buffers. For less than the profit of one 2-tank dive per month ($58 BZD), you have a 24/7 digital salesperson on your dock."
+      </div>
+
+      <h3 class="sub-title">C. Beachfront Resorts & Hotels (Alaia, Victoria House, Ramon's, Mahogany Bay)</h3>
+      <div class="script-box">
+        "Hi [Name]. Replace paper notices in your lobby with a digital welcome display showing daily activity schedules, spa specials, dinner menus, and a live marine weather widget for diving conditions. Your marketing team can update all screens from anywhere, while your front desk uses a tablet for instant announcements. Let me plug in my stick to show you your resort's welcome board."
+      </div>
+
+      <h3 class="sub-title">D. Street Food & Local Stands (Tacos, Pupuserias, Fruit Stands)</h3>
+      <div class="script-box">
+        "Good morning [Name]. Tourists often hesitate because they don't know the food or prices. For only $1 BZD a day ($30 BZD/month), we give you a bright digital menu board. You don't need a computer—just WhatsApp me a photo of your daily specials, and I update your board for you in 5 minutes. If it brings in just two extra tourists a week, it pays for itself."
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">6. The 10-Minute "Stick & Show" Walk-In Demo</h2>
+      
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>The Backpack Kit:</strong> Carry an Amazon Firestick 4K or Chromecast (pre-loaded with `VVSignageApp.apk`), a tablet with `VVTabletApp`, an HDMI extender, and your phone hotspot turned on.
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Plug & Switch (Minute 0-2):</strong> Ask: <em>"Can I borrow HDMI 2 on your TV for 60 seconds?"</em> Switch the TV input. It immediately boots into a branded demo playlist for their industry.
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>The Tablet Magic Moment (Minute 3-5):</strong> Hand the owner your tablet. Say: <em>"Tap that red button."</em> The TV instantly cuts to an emergency or promotional override (e.g., 'HAPPY HOUR: 2-FOR-1 RUM PUNCH').
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>The Offline Proof (Minute 6-8):</strong> Turn off your phone hotspot. Show them the screen: <em>"Notice the video is still playing smoothly? It never goes down when island internet fails."</em>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-doc">
+      <span>VVSignage Belize Master Sales Playbook</span>
+      <span>Confidential - For Internal Field Deployment</span>
+      <span>Page 3 of 4</span>
+    </footer>
+  </main>
+
+  <!-- ==================== PAGE 4: 30-DAY LAUNCH PLAN & AGREEMENT ==================== -->
+  <main class="page">
+    <header class="doc-header">
+      <div class="logo-area">
+        <h1>30-Day Launch Roadmap & Contract</h1>
+        <p>Operational Blueprint & 1-Page Printable Client Agreement</p>
+      </div>
+      <div class="badge-header">
+        Goal: 10 Paid Screens in 30 Days<br>
+        Est. Monthly MRR: $800 - $1,500 BZD
+      </div>
+    </header>
+
+    <section>
+      <h2 class="section-title">7. Step-by-Step 30-Day Launch Roadmap</h2>
+      
+      <div class="grid-2">
+        <div class="card">
+          <h4>Week 1: Tooling & Demo Kits</h4>
+          <p>
+            • Configure 2 demo TV sticks and 1 remote tablet.<br>
+            • Build 4 high-res demo playlists in CMS (Restaurant, Dive Shop, Hotel, Taco Stand).<br>
+            • Set up DigiWallet, E-kyash & Belize Bank merchant QR codes for easy local billing.
+          </p>
+        </div>
+        <div class="card">
+          <h4>Week 2: Secure 3 Pilot Locations</h4>
+          <p>
+            • Walk Front St & Middle St with the Demo Kit.<br>
+            • Install 3 pilot screens on a <strong>7-Day Risk-Free Trial</strong> (1 taco stand, 1 dive shop, 1 busy bar).<br>
+            • Document before/after footage for local social proof.
+          </p>
+        </div>
+        <div class="card">
+          <h4>Week 3: The Island Blitz</h4>
+          <p>
+            • Pitch Water Taxi terminals (SP Belize Express / Ocean Ferry) on the Ad-Network Model.<br>
+            • Walk into beachfront resorts north and south of the bridge.<br>
+            • Offer the <strong>$30 BZD Community Plan</strong> to golf cart rentals and street food vendors.
+          </p>
+        </div>
+        <div class="card">
+          <h4>Week 4: Onboarding & Expansion</h4>
+          <p>
+            • Convert trials to monthly recurring subscriptions.<br>
+            • Launch the WhatsApp Concierge channel for active clients.<br>
+            • Offer existing clients a $20 BZD credit for every business referral on the island.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">8. One-Page Printable Client Service Agreement</h2>
+
+      <div class="agreement-container">
+        <div class="form-row">
+          <div class="form-field"><span>Business Name:</span> </div>
+          <div class="form-field"><span>Location / Area:</span> </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><span>Contact Person:</span> </div>
+          <div class="form-field"><span>WhatsApp / Phone:</span> </div>
+        </div>
+
+        <p><strong>1. SUBSCRIPTION PLAN SELECTED (MONTHLY):</strong></p>
+        <p style="margin-left: 10px; margin-bottom: 8px;">
+          [ &nbsp; ] <strong>Community / Micro-Biz:</strong> $30 BZD / mo &nbsp;&nbsp;&nbsp;&nbsp;
+          [ &nbsp; ] <strong>Starter Plan:</strong> $58 BZD / screen / mo<br>
+          [ &nbsp; ] <strong>Pro Plan (Overrides & Logs):</strong> $98 BZD / screen / mo &nbsp;&nbsp;&nbsp;&nbsp;
+          [ &nbsp; ] <strong>Enterprise / Ad-Network:</strong> $78 BZD / screen / mo<br>
+          Number of Screens: ________ &nbsp;&nbsp;|&nbsp;&nbsp; Total Monthly SaaS: $________________ BZD
+        </p>
+
+        <p><strong>2. HARDWARE & ONBOARDING:</strong></p>
+        <p style="margin-left: 10px; margin-bottom: 8px;">
+          [ &nbsp; ] Refurbished Stick / Tablet Loaner ($25 BZD Deposit) &nbsp;&nbsp;&nbsp;&nbsp;
+          [ &nbsp; ] BYOD Setup on Existing TV ($100 BZD)<br>
+          [ &nbsp; ] Turnkey 4K Media Stick ($250 BZD) &nbsp;&nbsp;&nbsp;&nbsp;
+          [ &nbsp; ] Full TV Supply & Install: $________________ BZD
+        </p>
+
+        <p><strong>3. ISLAND GUARANTEE & SERVICE TERMS:</strong></p>
+        <ul style="margin-left: 20px; margin-bottom: 12px;">
+          <li><strong>7-Day Risk-Free Trial:</strong> Client may cancel at the end of 7 days with zero recurring obligation.</li>
+          <li><strong>Low-Season Freeze:</strong> 60-day billing pause available during September & October upon request.</li>
+          <li><strong>Payment Options:</strong> Cash, DigiWallet, E-kyash, Belize Bank Transfer, or Major Credit Card.</li>
+        </ul>
+
+        <div class="form-row" style="margin-top: 15px;">
+          <div class="form-field"><span>Client Signature:</span> </div>
+          <div class="form-field"><span>Date:</span> ____ / ____ / 2026</div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><span>VVSignage Representative:</span> </div>
+          <div class="form-field"><span>Billing Start Date:</span> ____ / ____ / 2026</div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer-doc">
+      <span>VVSignage Belize Master Sales Playbook</span>
+      <span>Confidential - For Internal Field Deployment</span>
+      <span>Page 4 of 4</span>
+    </footer>
+  </main>
+
+</body>
+</html>

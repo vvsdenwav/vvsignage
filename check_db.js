@@ -1,0 +1,1 @@
+const { PrismaClient } = require('@prisma/client'); const prisma = new PrismaClient(); async function main() { const screens = await prisma.screen.findMany(); console.log(screens.filter(s => s.overrideType).map(s => ({id: s.id, type: s.overrideType, payload: s.overridePayload}))); } main().catch(e => console.error(e)).finally(() => prisma.$disconnect());

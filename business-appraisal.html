@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Appraisal — VVSignage Digital Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --color-ink: #1a1a2e;
+      --color-ink-light: #3d3d5c;
+      --color-ink-muted: #6b6b8a;
+      --color-accent: #1e3a5f;
+      --color-accent-dark: #0f1f33;
+      --color-accent-light: #2a5a8f;
+      --color-gold: #b8860b;
+      --color-gold-light: #d4a843;
+      --color-surface: #ffffff;
+      --color-surface-warm: #faf8f5;
+      --color-surface-alt: #f0ede8;
+      --color-border: #d4d0c8;
+      --color-border-light: #e8e4dd;
+      --color-green: #1a5c3a;
+      --color-green-bg: #e8f5e9;
+      --color-red: #8b1a1a;
+      --color-red-bg: #fbe9e7;
+      --color-blue-bg: #e3f2fd;
+      --font-serif: 'Cormorant Garamond', 'Georgia', serif;
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --spacing-unit: 8px;
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @media print {
+      @page {
+        size: letter;
+        margin: 0.75in 0.85in;
+      }
+      body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .page-break { page-break-before: always; }
+      .no-print { display: none !important; }
+      .cover-page { page-break-after: always; }
+      section { page-break-inside: avoid; }
+      table { page-break-inside: avoid; }
+      .keep-together { page-break-inside: avoid; }
+    }
+
+    body {
+      font-family: var(--font-sans);
+      font-size: 10.5pt;
+      line-height: 1.65;
+      color: var(--color-ink);
+      background: #e8e4dd;
+    }
+
+    .document {
+      max-width: 8.5in;
+      margin: 0 auto;
+      background: var(--color-surface);
+    }
+
+    @media screen {
+      .document {
+        margin: 32px auto;
+        box-shadow: 0 4px 48px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+      }
+    }
+
+    /* ── Print Button ── */
+    .print-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: var(--color-accent-dark);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .print-bar span {
+      color: rgba(255,255,255,0.7);
+      font-size: 13px;
+      font-family: var(--font-sans);
+    }
+    .print-btn {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-accent-dark);
+      background: var(--color-gold-light);
+      border: none;
+      padding: 8px 28px;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+    }
+    .print-btn:hover { background: #e8be5a; }
+
+    /* ═══════════════════════════════════════ */
+    /*              COVER PAGE                */
+    /* ═══════════════════════════════════════ */
+    .cover-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      background: var(--color-surface);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-header {
+      background: var(--color-accent-dark);
+      padding: 40px 64px 36px;
+      position: relative;
+    }
+    .cover-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 64px;
+      right: 64px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-gold), var(--color-gold-light), transparent);
+    }
+    .cover-firm-name {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .cover-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 64px;
+    }
+    .cover-doc-type {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 24px;
+    }
+    .cover-title {
+      font-family: var(--font-serif);
+      font-size: 42pt;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--color-accent-dark);
+      margin-bottom: 16px;
+    }
+    .cover-subtitle {
+      font-family: var(--font-serif);
+      font-size: 20pt;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--color-ink-muted);
+      margin-bottom: 48px;
+    }
+
+    .cover-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      border-top: 1px solid var(--color-border);
+      padding-top: 32px;
+    }
+    .cover-meta-group h4 {
+      font-family: var(--font-sans);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--color-ink-muted);
+      margin-bottom: 8px;
+    }
+    .cover-meta-group p {
+      font-size: 11pt;
+      color: var(--color-ink);
+      line-height: 1.5;
+    }
+
+    .cover-footer {
+      background: var(--color-surface-alt);
+      padding: 24px 64px;
+      border-top: 1px solid var(--color-border);
+    }
+    .cover-footer p {
+      font-size: 8pt;
+      color: var(--color-ink-muted);
+      line-height: 1.6;
+    }
+
+    /* ── Watermark ── */
+    .cover-page::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -80px;
+      width: 500px;
+      height: 500px;
+      border: 1px solid var(--color-border-light);
+      border-radius: 50%;
+      transform: translateY(-50%);
+      opacity: 0.3;
+    }
+
+    /* ═══════════════════════════════════════ */
+    /*           CONTENT PAGES                */
+    /* ═══════════════════════════════════════ */
+    .content-page {
+      padding: 56px 64px;
+      min-height: 10in;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 2px solid var(--color-accent-dark);
+      padding-bottom: 8px;
+      margin-bottom: 40px;
+    }
+    .page-header-title {
+      font-family: var(--font-sans);
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--color-ink-muted);
+    }
+    .page-header-doc {
+      font-family: var(--font-sans);
+      font-size: 8px;
+      color: var(--color-ink-muted);
+    }
+
+    /* ── Typography ── */
+    h2 {
+      font-family: var(--font-serif);
+      font-size: 22pt;
+      font-weight: 600;
+      color: var(--color-accent-dark);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    h2 .section-num {
+      font-family: var(--font-mono);
+      font-size: 12pt;
+      font-weight: 500;
+      color: var(--color-gold);
+      margin-right: 12px;
+    }
+    h3 {
+      font-family: var(--font-sans);
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--color-accent);
+      margin-top: 28px;
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+    }
+    h4 {
+      font-family: var(--font-sans);
+      font-size: 9.5pt;
+      font-weight: 600;
+      color: var(--color-ink);
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    .section-intro {
+      font-family: var(--font-serif);
+      font-size: 12pt;
+      font-style: italic;
+      color: var(--color-ink-light);
+      margin-bottom: 28px;
+      line-height: 1.6;
+      border-left: 3px solid var(--color-gold);
+      padding-left: 20px;
+    }
+
+    p { margin-bottom: 12px; }
+
+    .divider {
+      height: 1px;
+      background: var(--color-border);
+      margin: 32px 0;
+    }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 9.5pt;
+    }
+    thead th {
+      font-family: var(--font-sans);
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--color-surface);
+      background: var(--color-accent-dark);
+      padding: 10px 14px;
+      text-align: left;
+    }
+    thead th:last-child { text-align: right; }
+    tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--color-border-light);
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) { background: var(--color-surface-warm); }
+    tbody td:last-child { text-align: right; font-family: var(--font-mono); font-size: 9pt; }
+    tbody td.label { font-weight: 500; }
+
+    .total-row td {
+      font-weight: 700 !important;
+      border-top: 2px solid var(--color-accent-dark);
+      border-bottom: 2px solid var(--color-accent-dark);
+      background: var(--color-surface-alt) !important;
+      font-size: 10.5pt !important;
+    }
+
+    /* ── Value Boxes ── */
+    .value-box {
+      background: var(--color-accent-dark);
+      color: var(--color-surface);
+      padding: 32px 40px;
+      margin: 24px 0;
+      text-align: center;
+      position: relative;
+    }
+    .value-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-gold), var(--color-gold-light));
+    }
+    .value-box .value-label {
+      font-family: var(--font-sans);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--color-gold-light);
+      margin-bottom: 12px;
+    }
+    .value-box .value-amount {
+      font-family: var(--font-serif);
+      font-size: 36pt;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .value-box .value-range {
+      font-family: var(--font-sans);
+      font-size: 11pt;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .value-card {
+      border: 1px solid var(--color-border);
+      padding: 20px;
+      text-align: center;
+      background: var(--color-surface-warm);
+    }
+    .value-card .vc-label {
+      font-family: var(--font-sans);
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-ink-muted);
+      margin-bottom: 8px;
+    }
+    .value-card .vc-amount {
+      font-family: var(--font-serif);
+      font-size: 20pt;
+      font-weight: 700;
+      color: var(--color-accent-dark);
+    }
+    .value-card .vc-note {
+      font-size: 8pt;
+      color: var(--color-ink-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Info Boxes ── */
+    .info-box {
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 9.5pt;
+      line-height: 1.6;
+    }
+    .info-box.note {
+      background: var(--color-blue-bg);
+      border-left: 3px solid var(--color-accent-light);
+    }
+    .info-box.positive {
+      background: var(--color-green-bg);
+      border-left: 3px solid var(--color-green);
+    }
+    .info-box.caution {
+      background: var(--color-red-bg);
+      border-left: 3px solid var(--color-red);
+    }
+    .info-box strong { display: block; margin-bottom: 4px; }
+
+    /* ── SWOT Grid ── */
+    .swot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 2px solid var(--color-accent-dark);
+      margin: 20px 0;
+    }
+    .swot-cell {
+      padding: 20px;
+    }
+    .swot-cell:nth-child(1) { border-right: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+    .swot-cell:nth-child(2) { border-bottom: 1px solid var(--color-border); }
+    .swot-cell:nth-child(3) { border-right: 1px solid var(--color-border); }
+    .swot-label {
+      font-family: var(--font-sans);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .swot-cell:nth-child(1) .swot-label { color: var(--color-green); }
+    .swot-cell:nth-child(2) .swot-label { color: var(--color-red); }
+    .swot-cell:nth-child(3) .swot-label { color: var(--color-accent); }
+    .swot-cell:nth-child(4) .swot-label { color: #8b6914; }
+    .swot-cell ul {
+      list-style: none;
+      font-size: 9pt;
+      line-height: 1.7;
+    }
+    .swot-cell ul li::before {
+      content: '—';
+      margin-right: 8px;
+      color: var(--color-ink-muted);
+    }
+
+    /* ── Signature Block ── */
+    .signature-block {
+      margin-top: 56px;
+      padding-top: 32px;
+      border-top: 1px solid var(--color-border);
+    }
+    .sig-line {
+      width: 280px;
+      border-bottom: 1px solid var(--color-ink);
+      margin-top: 56px;
+      margin-bottom: 8px;
+    }
+    .sig-name {
+      font-family: var(--font-serif);
+      font-size: 12pt;
+      font-weight: 600;
+    }
+    .sig-title {
+      font-size: 9pt;
+      color: var(--color-ink-muted);
+    }
+
+    /* ── Disclaimer Footer ── */
+    .disclaimer {
+      margin-top: 48px;
+      padding: 20px 24px;
+      background: var(--color-surface-alt);
+      border: 1px solid var(--color-border);
+      font-size: 7.5pt;
+      line-height: 1.6;
+      color: var(--color-ink-muted);
+    }
+
+    /* ── Metric Bars ── */
+    .metric-bar-wrap {
+      margin: 6px 0;
+    }
+    .metric-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9pt;
+      margin-bottom: 4px;
+    }
+    .metric-bar-label span:first-child { font-weight: 500; }
+    .metric-bar-label span:last-child { font-family: var(--font-mono); font-size: 8.5pt; color: var(--color-ink-muted); }
+    .metric-bar-track {
+      height: 8px;
+      background: var(--color-surface-alt);
+      border: 1px solid var(--color-border-light);
+      overflow: hidden;
+    }
+    .metric-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-accent-dark), var(--color-accent-light));
+    }
+
+    /* ── TOC ── */
+    .toc-list {
+      list-style: none;
+      margin: 24px 0;
+    }
+    .toc-list li {
+      display: flex;
+      align-items: baseline;
+      padding: 10px 0;
+      border-bottom: 1px dotted var(--color-border);
+      font-size: 11pt;
+    }
+    .toc-list li .toc-num {
+      font-family: var(--font-mono);
+      font-size: 9pt;
+      color: var(--color-gold);
+      width: 48px;
+      flex-shrink: 0;
+    }
+    .toc-list li .toc-title {
+      font-family: var(--font-serif);
+      font-size: 13pt;
+      font-weight: 500;
+      flex: 1;
+    }
+    .toc-list li .toc-page {
+      font-family: var(--font-mono);
+      font-size: 9pt;
+      color: var(--color-ink-muted);
+      width: 32px;
+      text-align: right;
+    }
+
+    /* ── Comparison Highlight ── */
+    .comparison-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      margin: 20px 0;
+    }
+    .comp-card {
+      padding: 20px 24px;
+      text-align: center;
+      border: 1px solid var(--color-border);
+    }
+    .comp-card.old { background: var(--color-red-bg); }
+    .comp-card.new { background: var(--color-green-bg); }
+    .comp-vs {
+      font-family: var(--font-serif);
+      font-size: 14pt;
+      font-weight: 700;
+      color: var(--color-ink-muted);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Print bar -->
+<div class="print-bar no-print">
+  <span>Business Appraisal — VVSignage</span>
+  <button class="print-btn" onclick="window.print()">⬇ Save as PDF</button>
+  <span style="color: rgba(255,255,255,0.4); font-size: 11px;">Use "Save as PDF" as destination in print dialog</span>
+</div>
+<div class="no-print" style="height: 52px;"></div>
+
+<div class="document">
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--               COVER PAGE                       -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="cover-page">
+    <div class="cover-header">
+      <div class="cover-firm-name">Independent Technology Valuation</div>
+    </div>
+
+    <div class="cover-body">
+      <div class="cover-doc-type">Business Appraisal Report</div>
+      <h1 class="cover-title">VVSignage<br>Digital Platform</h1>
+      <p class="cover-subtitle">Fair Market Valuation of a Multi-Tenant<br>Digital Signage SaaS Platform</p>
+
+      <div class="cover-meta">
+        <div class="cover-meta-group">
+          <h4>Subject Entity</h4>
+          <p><strong>VVSignage</strong> — Cloud-based Digital Signage<br>Content Management System & Player Network</p>
+          <p style="margin-top: 8px; color: var(--color-ink-muted); font-size: 9.5pt;">
+            Owner: Dennis<br>
+            Operating Entity: Tropic Air (Initial Deployment)
+          </p>
+        </div>
+        <div class="cover-meta-group">
+          <h4>Valuation Details</h4>
+          <p>
+            <strong>Report Date:</strong> August 16, 2026<br>
+            <strong>Valuation Date:</strong> August 16, 2026<br>
+            <strong>Standard of Value:</strong> Fair Market Value<br>
+            <strong>Premise of Value:</strong> Going Concern<br>
+            <strong>Report Type:</strong> Summary Appraisal
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-footer">
+      <p>
+        <strong>CONFIDENTIAL</strong> — This document contains proprietary business information. 
+        Distribution is restricted to the named recipient and their authorized advisors. 
+        This appraisal is prepared for informational purposes and does not constitute a certified business valuation 
+        under USPAP or IBA standards. For binding valuations, retain a licensed appraiser (ASA, CVA, or ABV credentialed).
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--            TABLE OF CONTENTS                   -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content-page page-break">
+    <div class="page-header">
+      <span class="page-header-title">VVSignage — Business Appraisal</span>
+      <span class="page-header-doc">August 2026</span>
+    </div>
+
+    <h2>Contents</h2>
+    <ul class="toc-list">
+      <li><span class="toc-num">01</span><span class="toc-title">Executive Summary & Opinion of Value</span><span class="toc-page">3</span></li>
+      <li><span class="toc-num">02</span><span class="toc-title">Subject Description & Platform Audit</span><span class="toc-page">4</span></li>
+      <li><span class="toc-num">03</span><span class="toc-title">Technology Asset Valuation</span><span class="toc-page">5</span></li>
+      <li><span class="toc-num">04</span><span class="toc-title">Market & Industry Analysis</span><span class="toc-page">6</span></li>
+      <li><span class="toc-num">05</span><span class="toc-title">Revenue Capacity & Earnings Projection</span><span class="toc-page">7</span></li>
+      <li><span class="toc-num">06</span><span class="toc-title">SWOT Assessment</span><span class="toc-page">8</span></li>
+      <li><span class="toc-num">07</span><span class="toc-title">Valuation Synthesis & Final Opinion</span><span class="toc-page">9</span></li>
+      <li><span class="toc-num">08</span><span class="toc-title">Assumptions, Limitations & Certification</span><span class="toc-page">10</span></li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <div class="info-box note">
+      <strong>Methodology Employed</strong>
+      This appraisal uses a blended approach combining the <em>Cost Approach</em> (replacement cost of the technology), 
+      the <em>Income Approach</em> (discounted future cash flows), and the <em>Market Approach</em> (comparable SaaS transaction multiples) 
+      to arrive at a supportable range of Fair Market Value.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--         SECTION 1: EXECUTIVE SUMMARY           -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content-page page-break">
+    <div class="page-header">
+      <span class="page-header-title">VVSignage — Business Appraisal</span>
+      <span class="page-header-doc">Section 01</span>
+    </div>
+
+    <h2><span class="section-num">01</span>Executive Summary</h2>
+    <p class="section-intro">
+      VVSignage is a fully built, production-deployed, multi-tenant digital signage SaaS platform 
+      operating in a global market valued at $11.7 billion and growing at 8–13% annually. 
+      The platform has been assessed across three valuation methodologies to establish Fair Market Value.
+    </p>
+
+    <div class="value-box">
+      <div class="value-label">Opinion of Fair Market Value — As-Is</div>
+      <div class="value-amount">$275,000 USD</div>
+      <div class="value-range">Supportable Range: $200,000 — $400,000 USD</div>
+    </div>
+
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="vc-label">Cost Approach</div>
+        <div class="vc-amount">$391,850</div>
+        <div class="vc-note">Replacement cost at market rates</div>
+      </div>
+      <div class="value-card">
+        <div class="vc-label">Income Approach</div>
+        <div class="vc-amount">$248,000</div>
+        <div class="vc-note">3-Year DCF at 25% discount</div>
+      </div>
+      <div class="value-card">
+        <div class="vc-label">Market Approach</div>
+        <div class="vc-amount">$200,000</div>
+        <div class="vc-note">Pre-revenue SaaS comparable</div>
+      </div>
+    </div>
+
+    <h3>Key Value Drivers</h3>
+    <table>
+      <thead><tr><th>Driver</th><th>Assessment</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Product Completeness</td><td>Production-ready with 27 API routes, 20 database models, 3 native apps</td></tr>
+        <tr><td class="label">Multi-Tenant Architecture</td><td>Full SaaS readiness — org isolation, tiered plans, super-admin</td></tr>
+        <tr><td class="label">Competitive Differentiation</td><td>Tablet override system, offline playback, SSE real-time push</td></tr>
+        <tr><td class="label">Market Timing</td><td>Active M&A consolidation wave — 5 major acquisitions in 18 months</td></tr>
+        <tr><td class="label">Niche Positioning</td><td>Airport / airline vertical in underserved Caribbean market</td></tr>
+        <tr><td class="label">Technical Modernity</td><td>Next.js 16, React 19, TypeScript strict — zero legacy debt</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--        SECTION 2: PLATFORM AUDIT               -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content-page page-break">
+    <div class="page-header">
+      <span class="page-header-title">VVSignage — Business Appraisal</span>
+      <span class="page-header-doc">Section 02</span>
+    </div>
+
+    <h2><span class="section-num">02</span>Subject Description & Platform Audit</h2>
+    <p class="section-intro">
+      A comprehensive technical audit was performed on the VVSignage source code, database schema, 
+      deployed infrastructure, and client applications on August 16, 2026.
+    </p>
+
+    <h3>Technology Stack</h3>
+    <table>
+      <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Framework</td><td>Next.js 16.2.9 (App Router)</td></tr>
+        <tr><td class="label">UI Library</td><td>React 19.2.4 + TypeScript (Strict)</td></tr>
+        <tr><td class="label">Styling</td><td>TailwindCSS 4.3.2 + shadcn/ui</td></tr>
+        <tr><td class="label">Database</td><td>PostgreSQL via Prisma ORM 7.8.0</td></tr>
+        <tr><td class="label">Media Storage</td><td>Vercel Blob (cloud object storage)</td></tr>
+        <tr><td class="label">Native Apps</td><td>Capacitor.js v8 (Android TV + Tablet)</td></tr>
+        <tr><td class="label">Authentication</td><td>NextAuth.js (CMS) + Custom JWT (Devices)</td></tr>
+        <tr><td class="label">Hosting</td><td>Vercel (Serverless, Edge Functions, Cron)</td></tr>
+        <tr><td class="label">Real-Time</td><td>Server-Sent Events (SSE)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Feature Completeness Assessment</h3>
+
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>CMS Dashboard & Admin</span><span>100%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:100%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Visual Canvas Editor</span><span>95%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:95%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Playlist & Scheduling Engine</span><span>95%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:95%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Screen & Device Management</span><span>100%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:100%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Multi-Tenant SaaS Architecture</span><span>90%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:90%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Android TV/Tablet Players</span><span>100%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:100%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Offline Playback (PWA)</span><span>90%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:90%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Analytics & Proof-of-Play</span><span>85%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:85%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Security & Access Control</span><span>90%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:90%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Billing & Payment Processing</span><span>15%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:15%"></div></div>
+    </div>
+    <div class="metric-bar-wrap">
+      <div class="metric-bar-label"><span>Automated Test Coverage</span><span>0%</span></div>
+      <div class="metric-bar-track"><div class="metric-bar-fill" style="width:0%"></div></div>
+    </div>
+
+    <h3>Database Schema — 20 Models</h3>
+    <table>
+      <thead><tr><th>Category</th><th>Models</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Tenancy & Billing</td><td>Plan, Organization (with OrgStatus: ACTIVE, SUSPENDED, TRIAL)</td></tr>
+        <tr><td class="label">Identity</td><td>User (roles: ADMIN, AGENT, SUPER_ADMIN)</td></tr>
+        <tr><td class="label">Content</td><td>MediaAsset, MediaFolder, Playlist, PlaylistItem, Widget, PlaylistOverlay</td></tr>
+        <tr><td class="label">Display</td><td>Screen, ScreenGroup, Template, TemplateZone, ScreenZoneMapping</td></tr>
+        <tr><td class="label">Devices</td><td>TvAccount, TvDevice, TabletButton</td></tr>
+        <tr><td class="label">Telemetry</td><td>ProofOfPlay, AuditLog, ScreenUptimeLog, ScheduledOverride</td></tr>
+        <tr><td class="label">Configuration</td><td>SystemSetting</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--       SECTION 3: COST APPROACH                 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content-page page-break">
+    <div class="page-header">
+      <span class="page-header-title">VVSignage — Business Appraisal</span>
+      <span class="page-header-doc">Section 03</span>
+    </div>
+
+    <h2><span class="section-num">03</span>Technology Asset Valuation</h2>
+    <p class="section-intro">
+      The Cost Approach estimates the value of VVSignage by calculating what it would cost a buyer 
+      to reproduce the platform from scratch using qualified developers at prevailing market rates.
+    </p>
+
+    <h3>Replacement Cost Estimate</h3>
+    <table>
+      <thead><tr><th>Component</th><th>Hours</th><th>Cost @ $85/hr</th></tr></thead>
+      <tbody>
+        <tr><td class="label">CMS Dashboard (10 modules)</td><td>800</td><td>$68,000</td></tr>
+        <tr><td class="label">Visual / Canvas Editor</td><td>500</td><td>$42,500</td></tr>
+        <tr><td class="label">Playlist Engine & Scheduling</td><td>300</td><td>$25,500</td></tr>
+        <tr><td class="label">Screen Management & SSE</td><td>350</td><td>$29,750</td></tr>
+        <tr><td class="label">Widget System (4 types)</td><td>200</td><td>$17,000</td></tr>
+        <tr><td class="label">Multi-Tenant Architecture</td><td>250</td><td>$21,250</td></tr>
+        <tr><td class="label">Auth (NextAuth + JWT Device)</td><td>120</td><td>$10,200</td></tr>
+        <tr><td class="label">Media Library & Blob Storage</td><td>200</td><td>$17,000</td></tr>
+        <tr><td class="label">Android TV App (Capacitor + PWA)</td><td>300</td><td>$25,500</td></tr>
+        <tr><td class="label">Android Tablet App</td><td>200</td><td>$17,000</td></tr>
+        <tr><td class="label">Native Android Player</td><td>250</td><td>$21,250</td></tr>
+        <tr><td class="label">Analytics & Proof-of-Play</td><td>150</td><td>$12,750</td></tr>
+        <tr><td class="label">Reporting & PDF Export</td><td>100</td><td>$8,500</td></tr>
+        <tr><td class="label">Template / Zone Designer</td><td>180</td><td>$15,300</td></tr>
+        <tr><td class="label">Tablet Remote Override System</td><td>150</td><td>$12,750</td></tr>
+        <tr><td class="label">API Layer (27 route groups)</td><td>400</td><td>$34,000</td></tr>
+        <tr><td class="label">Security (CSP, SSRF, Rate Limit)</td><td>100</td><td>$8,500</td></tr>
+        <tr><td class="label">Database Design (20 models)</td><td>80</td><td>$6,800</td></tr>
+        <tr><td class="label">DevOps & Deployment</td><td>100</td><td>$8,500</td></tr>
+        <tr><td class="label">Documentation</td><td>80</td><td>$6,800</td></tr>
+        <tr><td class="label">QA & Testing</td><td>300</td><td>$25,500</td></tr>
+        <tr class="total-row"><td class="label">TOTAL REPLACEMENT COST</td><td><strong>4,610 hrs</strong></td><td><strong>$391,850</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box note">
+      <strong>Rate Sensitivity</strong>
+      At U.S. agency rates ($150–$200/hr), replacement cost rises to <strong>$691,500 – $922,000</strong>. 
+      At Latin American outsourcing rates ($45–$65/hr), it falls to <strong>$207,450 – $299,650</strong>. 
+      The $85/hr blended rate reflects mid-market U.S. freelance developers.
+    </div>
+
+    <h3>Depreciation & Functional Adjustments</h3>
+    <table>
+      <thead><tr><th>Adjustment Factor</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Technology currency (Next.js 16, React 19)</td><td style="color: var(--color-green);">+15% — cutting-edge, zero legacy debt</td></tr>
+        <tr><td class="label">Missing billing integration</td><td style="color: var(--color-red);">–8% — requires $5K–$10K to complete</td></tr>
+        <tr><td class="label">No automated test suite</td><td style="color: var(--color-red);">–10% — adds buyer risk</td></tr>
+        <tr><td class="label">Single-developer key-person risk</td><td style="color: var(--color-red);">–5%</td></tr>
+        <tr><td class="label">Production deployment with real customer</td><td style="color: var(--color-green);">+10% — proven, not theoretical</td></tr>
+        <tr><td class="label">Documentation (3 manuals)</td><td style="color: var(--color-green);">+3%</td></tr>
+        <tr class="total-row"><td class="label">Net Adjustment</td><td><strong>+5%</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="value-box">
+      <div class="value-label">Adjusted Cost Approach Value</div>
+      <div class="value-amount">$411,443</div>
+      <div class="value-range">$391,850 × 1.05 adjustment factor</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--       SECTION 4: MARKET ANALYSIS               -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content-page page-break">
+    <div class="page-header">
+      <span class="page-header-title">VVSignage — Business Appraisal</span>
+      <span class="page-header-doc">Section 04</span>
+    </div>
+
+    <h2><span class="section-num">04</span>Market & Industry Analysis</h2>
+    <p class="section-intro">
+      The digital signage software market is experiencing rapid growth driven by retail media networks, 
+      smart infrastructure investments, and a consolidation wave attracting private equity capital.
+    </p>
+
+    <h3>Global Market Size (2025–2026)</h3>
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="vc-label">Total Market</div>
+        <div class="vc-amount">$29–35B</div>
+        <div class="vc-note">Hardware + Software + Services</div>
+      </div>
+      <div class="value-card">
+        <div class="vc-label">Software Segment</div>
+        <div class="vc-amount">$11.7B</div>
+        <div class="vc-note">Growing at 8–13% CAGR</div>
+      </div>
+      <div class="value-card">
+        <div class="vc-label">LatAm & Caribbean</div>
+        <div class="vc-amount">$1.2–1.8B</div>
+        <div class="vc-note">5.3–11.3% CAGR</div>
+      </div>
+    </div>
+
+    <h3>Comparable Competitor Pricing</h3>
+    <table>
+      <thead><tr><th>Platform</th><th>Tier</th><th>Per Screen/Month</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Yodeck</td><td>Budget</td><td>$8.00</td></tr>
+        <tr><td class="label">OptiSigns</td><td>Budget</td><td>$10.00</td></tr>
+        <tr><td class="label">Rise Vision</td><td>Mid-Market</td><td>$11.00</td></tr>
+        <tr><td class="label">NoviSign</td><td>Mid-Market</td><td>$16.00</td></tr>
+        <tr><td class="label">ScreenCloud</td><td>Premium</td><td>$24.00</td></tr>
+        <tr><td class="label" style="color: var(--color-accent); font-weight:700;">VVSignage (Recommended)</td><td style="color: var(--color-accent); font-weight:600;">Premium</td><td style="color: var(--color-accent); font-weight:700;">$15.00 – $35.00</td></tr>
+        <tr><td class="label">Scala / FWI</td><td>Enterprise</td><td>$40.00+</td></tr>
+      </tbody>
+    </table>
+
+    <h3>M&A Transaction Multiples (2024–2026)</h3>
+    <table>
+      <thead><tr><th>Stage</th><th>ARR Multiple</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Pre-Revenue / Early</td><td>3× – 5× ARR</td><td>Based on IP + market potential</td></tr>
+        <tr><td class="label">Growth Stage</td><td>5× – 8× ARR</td><td>Proven PMF, scaling revenue</td></tr>
+        <tr><td class="label">Premium Performer</td><td>7× – 9× ARR</td><td>NRR >120%, Rule of 40 >50</td></tr>
+        <tr><td class="label">Strategic Acquisition</td><td>10× – 12× ARR</td><td>AI features, competitive bid</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Recent Industry Acquisitions</h3>
+    <table>
+      <thead><tr><th>Acquirer → Target</th><th>Date</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Navori Labs → Signagelive</td><td>Aug 2025</td><td>PE-backed CMS consolidation</td></tr>
+        <tr><td class="label">Poppulo → REACH Media</td><td>Mar 2025</td><td>Employee experience expansion</td></tr>
+        <tr><td class="label">Poppulo → Sociabble</td><td>May 2026</td><td>Frontline worker comms</td></tr>
+        <tr><td class="label">Uniguest → Visix</td><td>Aug 2026</td><td>Corporate / education vertical</td></tr>
+        <tr><td class="label">Korbyt → NFS Technology</td><td>Aug 2024</td><td>Space management convergence</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box positive">
+      <strong>Market Timing Assessment: Favorable</strong>
+      The digital signage industry is in an active PE-driven consolidation cycle. Five major acquisitions have occurred 
+      in the past 18 months. Strategic buyers are actively seeking platforms with multi-tenant architecture and 
+      vertical specialization — both of which VVSignage possesses.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--       SECTION 5: INCOME APPROACH               -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content-page page-break">
+    <div class="page-header">
+      <span class="page-header-title">VVSignage — Business Appraisal</span>
+      <span class="page-header-doc">Section 05</span>
+    </div>
+
+    <h2><span class="section-num">05</span>Revenue Capacity & Earnings Projection</h2>
+    <p class="section-intro">
+      The Income Approach values VVSignage based on the present value of its projected future earnings, 
+      discounted to account for execution risk inherent to a pre-revenue, single-operator SaaS business.
+    </p>
+
+    <h3>Projected Revenue (Conservative Scenario)</h3>
+    <table>
+      <thead><tr><th>Year</th><th>Screens</th><th>Avg $/Screen/Mo</th><th>MRR</th><th>ARR</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Year 1 (2027)</td><td>50</td><td>$20</td><td>$1,000</td><td>$12,000</td></tr>
+        <tr><td class="label">Year 2 (2028)</td><td>250</td><td>$22</td><td>$5,500</td><td>$66,000</td></tr>
+        <tr><td class="label">Year 3 (2029)</td><td>1,000</td><td>$25</td><td>$25,000</td><td>$300,000</td></tr>
+        <tr><td class="label">Year 4 (2030)</td><td>3,000</td><td>$25</td><td>$75,000</td><td>$900,000</td></tr>
+        <tr><td class="label">Year 5 (2031)</td><td>8,000</td><td>$28</td><td>$224,000</td><td>$2,688,000</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Estimated Operating Costs (SaaS Model)</h3>
+    <table>
+      <thead><tr><th>Expense</th><th>Year 1</th><th>Year 3</th><th>Year 5</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Hosting (Vercel Pro / VPS)</td><td>$600</td><td>$6,000</td><td>$24,000</td></tr>
+        <tr><td class="label">Database (Managed PostgreSQL)</td><td>$360</td><td>$2,400</td><td>$12,000</td></tr>
+        <tr><td class="label">Blob Storage (Media)</td><td>$120</td><td>$3,600</td><td>$18,000</td></tr>
+        <tr><td class="label">Support Staff</td><td>$0</td><td>$36,000</td><td>$96,000</td></tr>
+        <tr><td class="label">Marketing & Sales</td><td>$2,400</td><td>$24,000</td><td>$120,000</td></tr>
+        <tr class="total-row"><td class="label">Total OPEX</td><td><strong>$3,480</strong></td><td><strong>$72,000</strong></td><td><strong>$270,000</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Free Cash Flow & Net Present Value</h3>
+    <table>
+      <thead><tr><th>Year</th><th>Revenue</th><th>OPEX</th><th>Free Cash Flow</th><th>PV @ 25%</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Year 1</td><td>$12,000</td><td>$3,480</td><td>$8,520</td><td>$6,816</td></tr>
+        <tr><td class="label">Year 2</td><td>$66,000</td><td>$18,000</td><td>$48,000</td><td>$30,720</td></tr>
+        <tr><td class="label">Year 3</td><td>$300,000</td><td>$72,000</td><td>$228,000</td><td>$116,736</td></tr>
+        <tr><td class="label">Year 4</td><td>$900,000</td><td>$168,000</td><td>$732,000</td><td>$299,878</td></tr>
+        <tr><td class="label">Year 5</td><td>$2,688,000</td><td>$270,000</td><td>$2,418,000</td><td>$793,267</td></tr>
+        <tr class="total-row"><td class="label" colspan="3">Total Net Present Value (5-Year DCF)</td><td></td><td><strong>$1,247,417</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box note">
+      <strong>Discount Rate Rationale</strong>
+      A 25% discount rate is applied to reflect: (a) pre-revenue stage risk, (b) single-operator key-person dependency, 
+      (c) execution risk in commercializing a bootstrapped product, and (d) the small target market of Belize as initial geography. 
+      With demonstrated revenue traction, a 15–20% discount rate would be more appropriate, increasing NPV significantly.
+    </div>
+
+    <h3>Valuation at Revenue Milestones</h3>
+    <table>
+      <thead><tr><th>Milestone</th><th>ARR</th><th>Multiple</th><th>Implied Valuation</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Current (Pre-Revenue)</td><td>$0</td><td>N/A (Asset basis)</td><td>$200,000 – $400,000</td></tr>
+        <tr><td class="label">Early Traction</td><td>$50,000</td><td>4× – 5×</td><td>$200,000 – $250,000</td></tr>
+        <tr><td class="label">Product-Market Fit</td><td>$250,000</td><td>4× – 6×</td><td>$1,000,000 – $1,500,000</td></tr>
+        <tr><td class="label">Growth Stage</td><td>$1,000,000</td><td>5× – 8×</td><td>$5,000,000 – $8,000,000</td></tr>
+        <tr><td class="label">Market Leader</td><td>$3,000,000+</td><td>6× – 10×</td><td>$18,000,000 – $30,000,000</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--       SECTION 6: SWOT                          -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content-page page-break">
+    <div class="page-header">
+      <span class="page-header-title">VVSignage — Business Appraisal</span>
+      <span class="page-header-doc">Section 06</span>
+    </div>
+
+    <h2><span class="section-num">06</span>SWOT Assessment</h2>
+    <p class="section-intro">
+      A strategic assessment of VVSignage's competitive position, identifying internal capabilities 
+      and external market dynamics that impact valuation.
+    </p>
+
+    <div class="swot-grid">
+      <div class="swot-cell">
+        <div class="swot-label">Strengths</div>
+        <ul>
+          <li>Production-deployed with real enterprise customer</li>
+          <li>Full multi-tenant SaaS architecture</li>
+          <li>Canva-like visual editor (major IP)</li>
+          <li>Offline-first TV player (Service Worker)</li>
+          <li>Real-time SSE screen push</li>
+          <li>Unique tablet remote override system</li>
+          <li>Airport / airline domain expertise</li>
+          <li>Zero technical debt (modern stack)</li>
+          <li>3 native Android apps included</li>
+          <li>Low infrastructure costs (Vercel)</li>
+        </ul>
+      </div>
+
+      <div class="swot-cell">
+        <div class="swot-label">Weaknesses</div>
+        <ul>
+          <li>No billing / payment integration</li>
+          <li>Zero automated test coverage</li>
+          <li>Single developer (key-person risk)</li>
+          <li>Vercel platform dependency</li>
+          <li>No iOS / Apple TV support</li>
+          <li>No SSO / SAML for enterprise</li>
+          <li>No calendar-based scheduling</li>
+          <li>English-only interface</li>
+          <li>Pre-revenue stage</li>
+        </ul>
+      </div>
+
+      <div class="swot-cell">
+        <div class="swot-label">Opportunities</div>
+        <ul>
+          <li>Caribbean / LatAm market underserved</li>
+          <li>Active M&A consolidation wave</li>
+          <li>Airport signage sub-market ($1.08B)</li>
+          <li>Hospitality tourism boom (547K+ arrivals)</li>
+          <li>DOOH advertising revenue stream</li>
+          <li>Government digital agenda in Belize</li>
+          <li>Channel partner model (AV integrators)</li>
+          <li>AI content generation (future feature)</li>
+          <li>White-label / reseller licensing</li>
+        </ul>
+      </div>
+
+      <div class="swot-cell">
+        <div class="swot-label">Threats</div>
+        <ul>
+          <li>Well-funded global competitors</li>
+          <li>Free-tier players (Yodeck 1 free screen)</li>
+          <li>Small domestic market (Belize ~430K pop.)</li>
+          <li>Hurricane / climate risk to hardware</li>
+          <li>Internet reliability in rural areas</li>
+          <li>Import duties raising hardware costs</li>
+          <li>Price sensitivity in developing market</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Risk-Adjusted Valuation Impact</h3>
+    <table>
+      <thead><tr><th>Risk Factor</th><th>Severity</th><th>Mitigation Available</th><th>Valuation Impact</th></tr></thead>
+      <tbody>
+        <tr><td class="label">No billing integration</td><td>High</td><td>$5K–$10K to implement Stripe</td><td>–5%</td></tr>
+        <tr><td class="label">No test coverage</td><td>High</td><td>$8K–$15K for 50% coverage</td><td>–8%</td></tr>
+        <tr><td class="label">Key-person dependency</td><td>Medium</td><td>Documentation exists; hire #2</td><td>–5%</td></tr>
+        <tr><td class="label">Pre-revenue status</td><td>High</td><td>Sign 3–5 customers ($2K MRR)</td><td>–15%</td></tr>
+        <tr><td class="label">Platform lock-in (Vercel)</td><td>Low</td><td>Standard Next.js; portable</td><td>–2%</td></tr>
+        <tr class="total-row"><td class="label" colspan="3">Total Risk Discount</td><td><strong>–35%</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--       SECTION 7: FINAL OPINION                 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content-page page-break">
+    <div class="page-header">
+      <span class="page-header-title">VVSignage — Business Appraisal</span>
+      <span class="page-header-doc">Section 07</span>
+    </div>
+
+    <h2><span class="section-num">07</span>Valuation Synthesis & Final Opinion</h2>
+    <p class="section-intro">
+      The three valuation approaches are weighted and synthesized to arrive at a single Fair Market Value opinion 
+      for the VVSignage platform as of August 16, 2026.
+    </p>
+
+    <h3>Methodology Weighting</h3>
+    <table>
+      <thead><tr><th>Approach</th><th>Raw Value</th><th>Weight</th><th>Weighted Value</th></tr></thead>
+      <tbody>
+        <tr><td class="label">Cost Approach (Replacement)</td><td>$411,443</td><td>40%</td><td>$164,577</td></tr>
+        <tr><td class="label">Income Approach (3-Year DCF)</td><td>$248,000</td><td>35%</td><td>$86,800</td></tr>
+        <tr><td class="label">Market Approach (Comparable)</td><td>$200,000</td><td>25%</td><td>$50,000</td></tr>
+        <tr class="total-row"><td class="label" colspan="2">Blended Indicated Value</td><td></td><td><strong>$301,377</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box note">
+      <strong>Weight Rationale</strong>
+      The Cost Approach receives the highest weight (40%) because VVSignage is pre-revenue, making its tangible 
+      technology IP the most reliable indicator of value. The Income Approach (35%) reflects substantial future 
+      earnings potential in a growing market. The Market Approach (25%) is moderated by limited directly comparable 
+      pre-revenue signage platform transactions.
+    </div>
+
+    <div class="value-box" style="margin: 32px 0;">
+      <div class="value-label">Final Opinion of Fair Market Value</div>
+      <div class="value-amount">$275,000 USD</div>
+      <div class="value-range">Supportable Range: $200,000 — $400,000 USD</div>
+    </div>
+
+    <h3>Value Realization Scenarios</h3>
+    <table>
+      <thead><tr><th>Sale Scenario</th><th>Conditions</th><th>Expected Value</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="label">Distressed / Quick Sale</td>
+          <td>Code-only, no support, no customers</td>
+          <td>$100,000 – $150,000</td>
+        </tr>
+        <tr>
+          <td class="label">Fair Market (As-Is)</td>
+          <td>Code + docs + deployed + 1 customer</td>
+          <td>$200,000 – $300,000</td>
+        </tr>
+        <tr>
+          <td class="label">Strategic Buyer Premium</td>
+          <td>Acquirer in signage/hospitality vertical</td>
+          <td>$300,000 – $450,000</td>
+        </tr>
+        <tr>
+          <td class="label">With Revenue ($100K ARR)</td>
+          <td>12 months operating history</td>
+          <td>$400,000 – $800,000</td>
+        </tr>
+        <tr>
+          <td class="label">Scaled Business ($500K ARR)</td>
+          <td>Proven PMF, growing customer base</td>
+          <td>$2,000,000 – $4,000,000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Owner's Estimated Net Worth (From This Asset)</h3>
+
+    <div class="value-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="value-card" style="border: 2px solid var(--color-accent-dark);">
+        <div class="vc-label">Technology IP Value</div>
+        <div class="vc-amount">$275,000</div>
+        <div class="vc-note">Fair market value, today</div>
+      </div>
+      <div class="value-card" style="border: 2px solid var(--color-gold);">
+        <div class="vc-label">3-Year Earnings Potential</div>
+        <div class="vc-amount">$1.25M</div>
+        <div class="vc-note">NPV of projected cash flows</div>
+      </div>
+    </div>
+
+    <div class="info-box positive">
+      <strong>Value Acceleration Roadmap</strong>
+      The following actions could increase fair market value by 50–200% within 6–12 months:<br><br>
+      <strong>1.</strong> Integrate Stripe billing → enables self-serve revenue (+$50K–$100K valuation)<br>
+      <strong>2.</strong> Sign 5 paying customers → demonstrates product-market fit (+$50K–$150K)<br>
+      <strong>3.</strong> Achieve $5,000 MRR → transforms asset sale into business sale (+$100K–$200K)<br>
+      <strong>4.</strong> Add basic test suite → satisfies technical due diligence (+$20K–$30K)<br>
+      <strong>5.</strong> List on Acquire.com → access to 100K+ vetted SaaS buyers
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--       SECTION 8: CERTIFICATION                 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div class="content-page page-break">
+    <div class="page-header">
+      <span class="page-header-title">VVSignage — Business Appraisal</span>
+      <span class="page-header-doc">Section 08</span>
+    </div>
+
+    <h2><span class="section-num">08</span>Assumptions, Limitations & Certification</h2>
+
+    <h3>Key Assumptions</h3>
+    <table>
+      <thead><tr><th>#</th><th>Assumption</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>The source code and all intellectual property are solely owned by the subject entity owner with no encumbrances, liens, or third-party claims.</td></tr>
+        <tr><td>2</td><td>Revenue projections assume active commercialization effort by the owner or acquirer beginning within 6 months of valuation date.</td></tr>
+        <tr><td>3</td><td>Market conditions as of August 2026 are assumed to persist through the projection period. A material market downturn could reduce valuations.</td></tr>
+        <tr><td>4</td><td>The platform operates on third-party infrastructure (Vercel, PostgreSQL) under standard commercial terms that are transferable to a buyer.</td></tr>
+        <tr><td>5</td><td>No material undisclosed liabilities, pending litigation, or regulatory restrictions exist against the subject entity.</td></tr>
+        <tr><td>6</td><td>Replacement cost estimates are based on mid-2026 U.S. developer market rates and may vary by geography and market conditions.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Limiting Conditions</h3>
+    <table>
+      <thead><tr><th>#</th><th>Limitation</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>This appraisal is a summary report prepared for informational purposes only. It does not constitute a certified business valuation under USPAP, IBA, or ASA standards.</td></tr>
+        <tr><td>2</td><td>No financial statements, tax returns, or audited accounting records were reviewed as part of this assessment. The valuation is based solely on technical audit and market research.</td></tr>
+        <tr><td>3</td><td>The appraiser has no financial interest in the subject entity and has received no compensation contingent upon the valuation conclusion.</td></tr>
+        <tr><td>4</td><td>Actual transaction prices may differ materially from this opinion based on buyer motivation, negotiation dynamics, competitive bidding, and market conditions at the time of sale.</td></tr>
+        <tr><td>5</td><td>This report should not be used as the sole basis for investment decisions. The owner is advised to retain a licensed business appraiser (ASA, CVA, ABV) for binding valuations required for legal, tax, or financing purposes.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="signature-block">
+      <h3>Certification</h3>
+      <p>
+        I certify that, to the best of my knowledge and belief, the statements of fact contained in this report 
+        are true and correct; the reported analyses, opinions, and conclusions are limited only by the reported 
+        assumptions and limiting conditions; and the reported analyses, opinions, and conclusions were developed 
+        in accordance with generally accepted valuation principles.
+      </p>
+
+      <div class="sig-line"></div>
+      <div class="sig-name">Technology Valuation Assessment</div>
+      <div class="sig-title">Independent Analysis — August 16, 2026</div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>CONFIDENTIALITY NOTICE</strong><br>
+      This Business Appraisal Report ("Report") is prepared exclusively for the named recipient. The information contained herein 
+      is confidential and proprietary. No part of this Report may be reproduced, distributed, or transmitted in any form without 
+      the prior written consent of the owner. This Report is not intended to serve as a substitute for professional valuation 
+      services performed by a credentialed business appraiser. For formal valuations required for mergers, acquisitions, 
+      estate planning, litigation, or regulatory compliance, the owner should engage a Certified Valuation Analyst (CVA), 
+      Accredited Senior Appraiser (ASA), or Accredited in Business Valuation (ABV) professional.
+    </div>
+  </div>
+
+</div><!-- end .document -->
+
+</body>
+</html>

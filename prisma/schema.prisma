@@ -1,0 +1,522 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  AGENT
+  SUPER_ADMIN
+}
+
+enum OrgStatus {
+  ACTIVE
+  SUSPENDED
+  CANCELLED
+  TRIAL
+}
+
+enum ApprovalStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+model Plan {
+  id             String         @id @default(uuid())
+  name           String         @unique
+  maxScreens     Int
+  storageLimitMb Int
+  priceUsd       Float
+  organizations  Organization[]
+  createdAt      DateTime       @default(now())
+}
+
+model Organization {
+  id              String    @id @default(uuid())
+  name            String
+  slug            String    @unique
+  companyCode     String?   @unique
+  contactEmail    String
+  contactName     String?
+  status          OrgStatus @default(TRIAL)
+  trialEndsAt     DateTime?
+  planId          String?
+  plan            Plan?     @relation(fields: [planId], references: [id])
+  storageUsedMb          Float     @default(0)
+  customMaxScreens       Int?
+  customStorageLimitMb   Int?
+  customPriceUsd         Float?
+  pricePerExtraScreenUsd Float?
+  apkServerUrl           String?
+  brandingLogoUrl        String?
+  brandingColor          String?
+  customDomain           String?   @unique
+
+  // Organization-wide broadcast alert
+  broadcastAlertActive  Boolean @default(false)
+  broadcastAlertPayload String? // JSON string: { title, message, severity, ... }
+
+  users            User[]
+  screens          Screen[]
+  playlists        Playlist[]
+  mediaAssets      MediaAsset[]
+  tvAccounts       TvAccount[]
+  screenGroups     ScreenGroup[]
+  widgets          Widget[]
+  templates        Template[]
+  auditLogs        AuditLog[]
+  mediaFolders     MediaFolder[]
+  approvalRequests ApprovalRequest[]
+  qrScans          QrScan[]
+  tags             Tag[]
+  contentTemplates ContentTemplate[]
+  upgradeRequests  PlanUpgradeRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PlanUpgradeRequest {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  requestedType  String       // "screens", "storage", "general"
+  requestedCount Int?         // e.g. +2 screens, +5GB
+  notes          String?
+  status         String       @default("PENDING") // "PENDING", "FULFILLED", "DISMISSED"
+  contactEmail   String?
+  contactPhone   String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model User {
+  id             String        @id @default(uuid())
+  username       String        @unique
+  password       String
+  role           Role          @default(AGENT)
+  permissions    String?       @default("[]")
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  auditLogs      AuditLog[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model ScreenGroup {
+  id             String        @id @default(uuid())
+  name           String
+  description    String?
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  playlistId     String?
+  playlist       Playlist?     @relation(fields: [playlistId], references: [id])
+  screens        Screen[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Screen {
+  id              String        @id @default(uuid())
+  name            String
+  pairingCode     String?       @unique
+  controlToken    String?       @unique @default(uuid())
+  status          String        @default("offline") // online, offline
+  lastSeenAt      DateTime?
+  lastPing        DateTime?
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id])
+  playlistId      String?
+  playlist        Playlist?     @relation(fields: [playlistId], references: [id])
+  groupId         String?
+  group           ScreenGroup?  @relation(fields: [groupId], references: [id])
+  overrideType    String? // e.g. "html", "image"
+  overridePayload String? // JSON string containing override data
+
+  // Remote Screenshots / Proof-of-Display
+  lastScreenshotUrl String?
+  lastScreenshotAt  DateTime?
+
+  // Operating Hours & Sleep Schedule
+  operatingHoursActive Boolean @default(false)
+  wakeTime             String? // e.g. "07:00"
+  sleepTime            String? // e.g. "22:00"
+  sleepMode            String? @default("black") // "black", "clock", "dim"
+
+  // Screen-specific Emergency / Notice Broadcast
+  alertActive  Boolean @default(false)
+  alertPayload String? // JSON string: { title, message, severity: "info"|"warning"|"urgent", expiresAt }
+
+  // Weather Location for weather-conditional rules
+  location     String?
+
+  templateId   String?
+  template     Template?           @relation(fields: [templateId], references: [id])
+  zoneMappings ScreenZoneMapping[]
+
+  interactivePlaylistId String?
+  interactivePlaylist   Playlist? @relation("InteractivePlaylist", fields: [interactivePlaylistId], references: [id])
+  inactivityTimeout     Int?      @default(30)
+  autoStart             Boolean   @default(true)
+
+  proofOfPlays ProofOfPlay[]
+  tvAccounts   TvAccount[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lastSeenAt])
+}
+
+model Playlist {
+  id                 String              @id @default(uuid())
+  name               String
+  description        String?
+  organizationId     String?
+  organization       Organization?       @relation(fields: [organizationId], references: [id])
+  transition         String?             @default("fade") // e.g. "none", "fade", "slide-left", "slide-up"
+  startTime          String? // e.g. "08:00"
+  endTime            String? // e.g. "17:00"
+  daysOfWeek         String? // e.g. "1,2,3,4,5" (1=Mon, 7=Sun)
+  scheduledPushAt    DateTime? // timestamp for CMS to push playlist updates to TVs
+  
+  // Smart Playlist & Approval
+  isSmartPlaylist    Boolean             @default(false)
+  smartRules         String?             // JSON string: { includeTags: [], excludeTags: [], sortBy: "newest", maxItems: 20 }
+  approvalStatus     ApprovalStatus      @default(APPROVED)
+  
+  screens            Screen[]
+  interactiveScreens Screen[]            @relation("InteractivePlaylist")
+  groups             ScreenGroup[]
+  items              PlaylistItem[]
+  overlays           PlaylistOverlay[]
+  zoneMappings       ScreenZoneMapping[]
+  versions           PlaylistVersion[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model PlaylistVersion {
+  id         String   @id @default(uuid())
+  playlistId String
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  snapshot   String   // JSON string of { items, overlays, transition, startTime, endTime, daysOfWeek }
+  label      String?  // e.g. "Published v3", "Auto-save before push"
+  createdBy  String?
+  createdAt  DateTime @default(now())
+
+  @@index([playlistId, createdAt])
+}
+
+model MediaFolder {
+  id             String        @id @default(uuid())
+  name           String
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  assets         MediaAsset[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model MediaAsset {
+  id             String         @id @default(uuid())
+  name           String
+  url            String
+  type           String // image, video, creative, embed
+  duration       Int? // Optional duration in seconds for images
+  sizeBytes      Int?           @default(0)
+  expiresAt      DateTime?      // Auto-expiration timestamp
+  approvalStatus ApprovalStatus @default(APPROVED)
+  organizationId String?
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
+  folderId       String?
+  folder         MediaFolder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  playlistItems  PlaylistItem[]
+  tabletButtons  TabletButton[]
+  proofOfPlays   ProofOfPlay[]
+  tags           Tag[]          @relation("MediaTags")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Tag {
+  id             String       @id @default(uuid())
+  name           String
+  color          String?      @default("#3b82f6") // Hex color for visual badge
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  mediaAssets    MediaAsset[] @relation("MediaTags")
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, name])
+}
+
+model PlaylistItem {
+  id               String      @id @default(uuid())
+  playlistId       String
+  mediaId          String?
+  widgetId         String? // If it's a standalone widget slide
+  order            Int         @default(0)
+  duration         Int? // Override default duration
+  transition       String? // Override playlist default transition
+  conditionPayload String? // JSON string: { enabled: boolean, tempMin?: number, tempMax?: number, weatherCondition?: string }
+  activeFrom       DateTime?   // Schedule start date/time
+  activeUntil      DateTime?   // Schedule end date/time
+  playlist         Playlist    @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  media            MediaAsset? @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  widget           Widget?     @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([playlistId])
+}
+
+model ApprovalRequest {
+  id             String         @id @default(uuid())
+  type           String         // "media" or "playlist"
+  targetId       String         // MediaAsset.id or Playlist.id
+  targetName     String
+  thumbnailUrl   String?
+  status         ApprovalStatus @default(PENDING_REVIEW)
+  submittedBy    String         // User.id
+  submitterName  String
+  reviewedBy     String?        // Admin User.id
+  reviewerName   String?
+  reviewNote     String?
+  organizationId String
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime       @default(now())
+  reviewedAt     DateTime?
+
+  @@index([organizationId, status])
+}
+
+model QrScan {
+  id             String       @id @default(uuid())
+  code           String       // The short code (e.g. "qr_abc123")
+  screenId       String?
+  screenName     String?
+  campaignName   String?      // Widget name / label
+  destinationUrl String
+  scannedAt      DateTime     @default(now())
+  userAgent      String?
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId, scannedAt])
+  @@index([code])
+}
+
+model ContentTemplate {
+  id             String        @id @default(uuid())
+  name           String
+  category       String        // "welcome", "menu", "event", "promo", "flight-board", "safety", "social", "announcement"
+  description    String?
+  thumbnail      String?       // Preview image URL or icon string
+  canvasData     String        // JSON blob matching CreativeCanvasEditor format
+  isSystem       Boolean       @default(true)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime      @default(now())
+
+  @@index([category])
+}
+
+model AuditLog {
+  id             String        @id @default(cuid())
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  userId         String?
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userName       String?
+  action         String
+  details        String?
+  createdAt      DateTime      @default(now())
+
+  @@index([createdAt])
+}
+
+model TabletButton {
+  id          String     @id @default(uuid())
+  tvAccountId String?
+  tvAccount   TvAccount? @relation(fields: [tvAccountId], references: [id], onDelete: Cascade)
+
+  label      String
+  color      String @default("linear-gradient(135deg, #1e3a8a, #3b82f6)")
+  actionType String // "html", "image", "video"
+
+  // For actionType "image" or "video"
+  mediaId  String?
+  media    MediaAsset? @relation(fields: [mediaId], references: [id], onDelete: SetNull)
+  mediaUrl String?
+
+  // For actionType "html"
+  htmlTitle     String?
+  htmlSubtitle  String?
+  htmlBgColor   String?
+  htmlTextColor String?
+
+  duration  Int?     @default(0) // 0 means infinite
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProofOfPlay {
+  id       String     @id @default(uuid())
+  screenId String
+  mediaId  String
+  screen   Screen     @relation(fields: [screenId], references: [id], onDelete: Cascade)
+  media    MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  duration Int?       @default(0) // Duration played in seconds
+  playedAt DateTime   @default(now())
+
+  @@index([screenId])
+}
+
+model Widget {
+  id              String        @id @default(uuid())
+  name            String
+  type            String // "weather", "clock", "rss"
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id])
+  position        String        @default("bottom-right") // "top-left", "top-right", "bottom-left", "bottom-right", "bottom-bar"
+  dataPayload     String? // JSON string: e.g. { location: "Miami", url: "https://.../rss" }
+  backgroundColor String? // e.g. "transparent" or "#000000"
+
+  playlistItems PlaylistItem[]
+  overlays      PlaylistOverlay[]
+  zoneMappings  ScreenZoneMapping[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PlaylistOverlay {
+  id         String @id @default(uuid())
+  playlistId String
+  widgetId   String
+
+  playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  widget   Widget   @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Template {
+  id             String         @id @default(uuid())
+  name           String
+  organizationId String?
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
+  zones          TemplateZone[]
+  screens        Screen[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model TemplateZone {
+  id         String              @id @default(uuid())
+  templateId String
+  name       String
+  x          Float
+  y          Float
+  width      Float
+  height     Float
+  zIndex     Int                 @default(0)
+  template   Template            @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  mappings   ScreenZoneMapping[]
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+}
+
+model ScreenZoneMapping {
+  id         String       @id @default(uuid())
+  screenId   String
+  zoneId     String
+  playlistId String?
+  widgetId   String?
+  screen     Screen       @relation(fields: [screenId], references: [id], onDelete: Cascade)
+  zone       TemplateZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  playlist   Playlist?    @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  widget     Widget?      @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+
+  @@unique([screenId, zoneId])
+}
+
+model TvAccount {
+  id             String         @id @default(uuid())
+  username       String         @unique
+  password       String
+  organizationId String?
+  organization   Organization?  @relation(fields: [organizationId], references: [id])
+  devices        TvDevice[]
+  screens        Screen[]
+  tabletButtons  TabletButton[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model TvDevice {
+  id                String    @id @default(uuid())
+  name              String? // Optional name like 'Lobby TV 1'
+  screenId          String? // For syncing TVs remotely
+  accountId         String
+  account           TvAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  commandQueue      String? // Store pending commands for the device
+  lastScreenshotUrl String?
+  lastScreenshotAt  DateTime?
+  lastPingAt        DateTime  @default(now())
+  autoStart         Boolean   @default(true)
+  offlineReady      Boolean   @default(false)
+  offlineSyncedAt   DateTime?
+  offlinePlaylistId String?
+  location          String?
+  
+  // Fleet Health & Telemetry
+  appVersion        String?
+  cpuUsage          Float?
+  freeStorageMb     Float?
+  totalStorageMb    Float?
+  memoryAvailableMb Float?
+  wifiSignalStrength Int?
+  ipAddress         String?
+
+  createdAt         DateTime  @default(now())
+}
+
+model SystemSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String // JSON string
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ScreenUptimeLog {
+  id        String   @id @default(uuid())
+  screenId  String
+  status    String // "online" or "offline"
+  timestamp DateTime @default(now())
+
+  @@index([screenId, timestamp])
+}
+
+model ScheduledOverride {
+  id              String   @id @default(uuid())
+  screenId        String
+  overrideType    String
+  overridePayload String
+  scheduledAt     DateTime
+  executed        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  @@index([screenId, scheduledAt, executed])
+}

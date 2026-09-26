@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.env*
+npm-debug.log*
+Dockerfile
+.dockerignore
+README.md
+Developer_Manual.pdf
+User_Manual.pdf
+*.pdf
+*.html
+dump*
+test*

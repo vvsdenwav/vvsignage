@@ -1,0 +1,2791 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 8021
+>>
+stream
+0.200025 w
+0 G
+0.06 0.09 0.16 rg
+0. 841.8899999999999864 595.2799999999999727 -80. re
+f
+BT
+/F2 18 Tf
+20.6999999999999993 TL
+1. g
+40. 803.8899999999999864 Td
+(Tropic Air Digital Signage Platform) Tj
+ET
+BT
+/F1 11 Tf
+12.6499999999999986 TL
+0.58 0.639 0.722 rg
+40. 781.8899999999999864 Td
+(Complete Terminal CLI Migration Guide: Single Vultr Ubuntu + Apache + Postgres) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 731.8899999999999864 Td
+(Comprehensive Migration Guide: Tropic Air Digital Signage Platform) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 706.8899999999999864 Td
+(**Target Environment:** Single Vultr VPS \(2 vCPU, 2GB RAM, 80GB NVMe\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 693.8899999999999864 Td
+(**Operating System:** Ubuntu 24.04 LTS \(CLI / Headless\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 680.8899999999999864 Td
+(**Web Server:** Apache2 \(`mod_proxy` + `mod_proxy_http`\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 667.8899999999999864 Td
+(**Database:** PostgreSQL 16 \(Local Daemon\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 654.8899999999999864 Td
+(**Process Manager:** PM2) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 641.8899999999999864 Td
+(**SSL Certificate:** Let's Encrypt Certbot \(Free HTTPS\)) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 623.8899999999999864 m
+555.2799999999999727 623.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 598.8899999999999864 Td
+(Table of Contents) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 582.8899999999999864 Td
+(1. [Prerequisites & System Architecture]\(#1-prerequisites--system-architecture\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 569.8899999999999864 Td
+(2. [Step 1: Server Provisioning & Swap Memory Setup]\(#step-1-server-provisioning--swap-memory-setup\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 556.8899999999999864 Td
+(3. [Step 2: Installing Dependencies \(Node, Postgres, Apache, PM2\)]\(#step-2-installing-dependencies-node-postgres-apache-pm2\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 543.8899999999999864 Td
+(4. [Step 3: PostgreSQL Database Setup]\(#step-3-postgresql-database-setup\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 530.8899999999999864 Td
+(5. [Step 4: Codebase Modifications for Self-Hosting]\(#step-4-codebase-modifications-for-self-hosting\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 517.8899999999999864 Td
+(6. [Step 5: Codebase Transfer, Configuration & Building]\(#step-5-codebase-transfer-configuration--building\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 504.8899999999999864 Td
+(7. [Step 6: Process Management with PM2]\(#step-6-process-management-with-pm2\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 491.8899999999999864 Td
+(8. [Step 7: Apache Reverse Proxy & SSE Stream Configuration]\(#step-7-apache-reverse-proxy--sse-stream-configuration\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 478.8899999999999864 Td
+(9. [Step 8: SSL Certificate Setup \(Certbot\)]\(#step-8-ssl-certificate-setup-certbot\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 465.8899999999999864 Td
+(10. [Step 9: Updating Client Apps \(Android APKs & Tablets\)]\(#step-9-updating-client-apps-android-apks--tablets\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 452.8899999999999864 Td
+(11. [Step 10: Daily Automated Backup Script]\(#step-10-daily-automated-backup-script\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 439.8899999999999864 Td
+(12. [Verification & Troubleshooting Checklist]\(#verification--troubleshooting-checklist\)) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 421.8899999999999864 m
+555.2799999999999727 421.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 396.8899999999999864 Td
+(1. Prerequisites & System Architecture) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 369.8899999999999864 Td
+(Component Topology on Single VPS) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 354.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 342.8899999999999864 Td
+(+-------------------------------------------------------------------------+) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 329.8899999999999864 Td
+(|                          Vultr VPS \(Ubuntu 24.04\)                       |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 316.8899999999999864 Td
+(|                                                                         |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 303.8899999999999864 Td
+(|   +-----------------------------------------------------------------+   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 290.8899999999999864 Td
+(|   |                   Apache Web Server \(Port 80/443\)               |   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 277.8899999999999864 Td
+(|   +-----------------------------------------------------------------+   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 264.8899999999999864 Td
+(|            |                                           |                |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 251.8899999999999864 Td
+(|   /uploads/* \(Direct File Access\)           Proxy \(All API/UI Routes\)   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 238.8899999999999864 Td
+(|            v                                           v                |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 225.8899999999999864 Td
+(|   +-------------------+                     +-----------------------+   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 212.8899999999999864 Td
+(|   | /var/www/uploads  |                     | Next.js App \(Port 3000|   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 199.8899999999999864 Td
+(|   | \(NVMe Disk\)       |                     | Managed by PM2\)       |   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 186.8899999999999864 Td
+(|   +-------------------+                     +-----------------------+   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 173.8899999999999864 Td
+(|                                                        |                |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 160.8899999999999864 Td
+(|                                              Database Connections       |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 147.8899999999999864 Td
+(|                                                        v                |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 134.8899999999999864 Td
+(|                                             +-----------------------+   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 121.8899999999999864 Td
+(|                                             | PostgreSQL \(Port 5432\)|   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 108.8899999999999864 Td
+(|                                             +-----------------------+   |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 95.8899999999999864 Td
+(+-------------------------------------------------------------------------+) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 82.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 65.8899999999999864 m
+555.2799999999999727 65.8899999999999864 l
+S
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+40. 20. Td
+(Tropic Air Signage Infrastructure Guide | Page 1 of 8) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 4998
+>>
+stream
+1. w
+0.89 0.91 0.94 RG
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 793.8899999999999864 Td
+(Step 1: Server Provisioning & Swap Memory Setup) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 766.8899999999999864 Td
+(1.1 Create Vultr Server Instance) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 751.8899999999999864 Td
+(- **Cloud Provider:** Vultr Cloud Compute) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 738.8899999999999864 Td
+(- **OS:** Ubuntu 24.04 LTS x64) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 725.8899999999999864 Td
+(- **Plan:** Regular Cloud Compute or High Performance NVMe \(2 vCPU, 2GB RAM, 80GB NVMe\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 712.8899999999999864 Td
+(- **Location:** Select closest region to Belize / Central America \(e.g. Miami, FL\)) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 688.8899999999999864 Td
+(1.2 SSH Connection) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 673.8899999999999864 Td
+(Open your local terminal and connect as `root`:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 660.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 648.8899999999999864 Td
+(ssh root@YOUR_VULTR_SERVER_IP) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 635.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 612.8899999999999864 Td
+(1.3 Create a 2GB NVMe Swap File \(Critical for 2GB RAM\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 597.8899999999999864 Td
+(To prevent Out-Of-Memory \(OOM\) crashes during `npm run build` or traffic spikes:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 584.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 562.8899999999999864 Td
+(Allocate 2GB swap file) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 542.8899999999999864 Td
+(sudo fallocate -l 2G /swapfile) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 529.8899999999999864 Td
+(sudo chmod 600 /swapfile) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 516.8899999999999864 Td
+(sudo mkswap /swapfile) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 503.8899999999999864 Td
+(sudo swapon /swapfile) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 475.8899999999999864 Td
+(Make permanent across reboots) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 455.8899999999999864 Td
+(echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 427.8899999999999864 Td
+(Verify swap is active) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 407.8899999999999864 Td
+(free -h) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 394.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 377.8899999999999864 m
+555.2799999999999727 377.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 352.8899999999999864 Td
+(Step 2: Installing Dependencies \(Node, Postgres, Apache, PM2\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 331.8899999999999864 Td
+(Run the following commands in sequence:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 313.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 291.8899999999999864 Td
+(1. Update system packages) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 271.8899999999999864 Td
+(sudo apt update && sudo apt upgrade -y) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 243.8899999999999864 Td
+(2. Install Node.js 20.x LTS) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 223.8899999999999864 Td
+(curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 210.8899999999999864 Td
+(sudo apt install -y nodejs build-essential git) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 182.8899999999999864 Td
+(3. Verify Node and NPM versions) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 162.8899999999999864 Td
+(node -v  # Should be v20.x.x) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 149.8899999999999864 Td
+(npm -v   # Should be 10.x.x) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 121.8899999999999864 Td
+(4. Install Apache2 & Utilities) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 101.8899999999999864 Td
+(sudo apt install -y apache2 certbot python3-certbot-apache) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 73.8899999999999864 Td
+(5. Install PostgreSQL 16) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+40. 20. Td
+(Tropic Air Signage Infrastructure Guide | Page 2 of 8) Tj
+ET
+endstream
+endobj
+7 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 8 0 R
+>>
+endobj
+8 0 obj
+<<
+/Length 5992
+>>
+stream
+1. w
+0.89 0.91 0.94 RG
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 801.8899999999999864 Td
+(sudo apt install -y postgresql postgresql-contrib) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 773.8899999999999864 Td
+(6. Install PM2 globally) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 753.8899999999999864 Td
+(sudo npm install -g pm2) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 740.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 723.8899999999999864 m
+555.2799999999999727 723.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 698.8899999999999864 Td
+(Step 3: PostgreSQL Database Setup) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 671.8899999999999864 Td
+(3.1 Initialize Database and User) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 656.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 634.8899999999999864 Td
+(Switch to postgres user and open psql prompt) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 614.8899999999999864 Td
+(sudo -u postgres psql) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 601.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 584.8899999999999864 Td
+(Execute the SQL queries inside the `psql` interface:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 571.8899999999999864 Td
+(```sql) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 559.8899999999999864 Td
+(CREATE DATABASE signage_db;) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 546.8899999999999864 Td
+(CREATE USER signage_user WITH PASSWORD 'TropicAirSignage2026!';) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 533.8899999999999864 Td
+(GRANT ALL PRIVILEGES ON DATABASE signage_db TO signage_user;) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 520.8899999999999864 Td
+(ALTER DATABASE signage_db OWNER TO signage_user;) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 507.8899999999999864 Td
+(\\q) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 494.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 477.8899999999999864 m
+555.2799999999999727 477.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 452.8899999999999864 Td
+(Step 4: Codebase Modifications for Self-Hosting) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 431.8899999999999864 Td
+(Before uploading your code to Vultr, make these **2 small edits** in your project repository so it runs without Vercel:) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 407.8899999999999864 Td
+(4.1 Update `next.config.ts` for Standalone Output) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 392.8899999999999864 Td
+(Open `next.config.ts` and set `output: 'standalone'`:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 379.8899999999999864 Td
+(```typescript) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 367.8899999999999864 Td
+(import type { NextConfig } from "next";) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 354.8899999999999864 Td
+(import withPWAInit from "@ducanh2912/next-pwa";) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 336.8899999999999864 Td
+(const withPWA = withPWAInit\({) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 323.8899999999999864 Td
+(  dest: "public",) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 310.8899999999999864 Td
+(  disable: process.env.NODE_ENV === "development",) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 297.8899999999999864 Td
+(  register: true,) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 284.8899999999999864 Td
+(  cacheOnFrontEndNav: true,) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 271.8899999999999864 Td
+(}\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 253.8899999999999864 Td
+(const nextConfig: NextConfig = {) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 240.8899999999999864 Td
+(  output: 'standalone', // <-- ADD THIS LINE) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 227.8899999999999864 Td
+(  turbopack: {},) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 214.8899999999999864 Td
+(  // ... rest of headers and config) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 201.8899999999999864 Td
+(};) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 183.8899999999999864 Td
+(export default withPWA\(nextConfig\);) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 170.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 147.8899999999999864 Td
+(4.2 Update Media Upload Handler \(`src/app/api/media/route.ts`\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 132.8899999999999864 Td
+(Replace `@vercel/blob` with local NVMe file storage writes:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 114.8899999999999864 Td
+(```typescript) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 102.8899999999999864 Td
+(import { NextResponse } from 'next/server';) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 89.8899999999999864 Td
+(import { prisma } from '@/lib/prisma';) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 76.8899999999999864 Td
+(import { getServerSession } from 'next-auth';) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 63.8899999999999864 Td
+(import { authOptions } from '@/lib/auth';) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+40. 20. Td
+(Tropic Air Signage Infrastructure Guide | Page 3 of 8) Tj
+ET
+endstream
+endobj
+9 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 10 0 R
+>>
+endobj
+10 0 obj
+<<
+/Length 6658
+>>
+stream
+1. w
+0.89 0.91 0.94 RG
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 801.8899999999999864 Td
+(import { logAudit } from '@/lib/audit';) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 788.8899999999999864 Td
+(import { writeFile, mkdir } from 'fs/promises';) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 775.8899999999999864 Td
+(import path from 'path';) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 757.8899999999999864 Td
+(export async function POST\(request: Request\) {) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 744.8899999999999864 Td
+(  try {) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 731.8899999999999864 Td
+(    const session = await getServerSession\(authOptions\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 718.8899999999999864 Td
+(    const contentType = request.headers.get\('content-type'\) || '';) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 700.8899999999999864 Td
+(    // ... \(Keep existing JSON embed handler\) ...) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 682.8899999999999864 Td
+(    // Handle FormData File Uploads to Local Disk) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 669.8899999999999864 Td
+(    const data = await request.formData\(\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 656.8899999999999864 Td
+(    const file: File | null = data.get\('file'\) as unknown as File;) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 638.8899999999999864 Td
+(    if \(!file\) {) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 625.8899999999999864 Td
+(      return NextResponse.json\({ success: false, error: 'No file provided' }, { status: 400 }\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 612.8899999999999864 Td
+(    }) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 594.8899999999999864 Td
+(    // Save directly to local /public/uploads directory) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 581.8899999999999864 Td
+(    const uploadDir = path.join\(process.cwd\(\), 'public', 'uploads'\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 568.8899999999999864 Td
+(    await mkdir\(uploadDir, { recursive: true }\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 550.8899999999999864 Td
+(    const uniqueFilename = `${Date.now\(\)}-${file.name.replace\(/[^a-zA-Z0-9.\\-_]/g, ''\)}`;) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 537.8899999999999864 Td
+(    const filePath = path.join\(uploadDir, uniqueFilename\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 519.8899999999999864 Td
+(    const bytes = await file.arrayBuffer\(\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 506.8899999999999864 Td
+(    await writeFile\(filePath, Buffer.from\(bytes\)\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 488.8899999999999864 Td
+(    const fileUrl = `/uploads/${uniqueFilename}`;) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 475.8899999999999864 Td
+(    const folderId = data.get\('folderId'\) as string | null;) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 462.8899999999999864 Td
+(    const type = file.type.startsWith\('video/'\) ? 'video' : 'image';) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 444.8899999999999864 Td
+(    const mediaAsset = await prisma.mediaAsset.create\({) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 431.8899999999999864 Td
+(      data: {) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 418.8899999999999864 Td
+(        name: file.name,) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 405.8899999999999864 Td
+(        url: fileUrl,) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 392.8899999999999864 Td
+(        type: type,) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 379.8899999999999864 Td
+(        folderId: folderId || null,) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 366.8899999999999864 Td
+(      }) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 353.8899999999999864 Td
+(    }\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 335.8899999999999864 Td
+(    await logAudit\('UPLOAD_MEDIA', `Uploaded media file ${file.name}`, session\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 322.8899999999999864 Td
+(    return NextResponse.json\({ success: true, media: mediaAsset }\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 309.8899999999999864 Td
+(  } catch \(error\) {) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 296.8899999999999864 Td
+(    console.error\("Upload error:", error\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 283.8899999999999864 Td
+(    return NextResponse.json\({ success: false, error: 'Upload failed' }, { status: 500 }\);) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 270.8899999999999864 Td
+(  }) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 257.8899999999999864 Td
+(}) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 244.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 227.8899999999999864 m
+555.2799999999999727 227.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 202.8899999999999864 Td
+(Step 5: Codebase Transfer, Configuration & Building) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 175.8899999999999864 Td
+(5.1 Clone Codebase to Server) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 160.8899999999999864 Td
+(On your Vultr server CLI:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 147.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 125.8899999999999864 Td
+(Create application directory) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 105.8899999999999864 Td
+(sudo mkdir -p /var/www/signage) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 92.8899999999999864 Td
+(sudo chown -R $USER:$USER /var/www/signage) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 79.8899999999999864 Td
+(cd /var/www/signage) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+40. 20. Td
+(Tropic Air Signage Infrastructure Guide | Page 4 of 8) Tj
+ET
+endstream
+endobj
+11 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 12 0 R
+>>
+endobj
+12 0 obj
+<<
+/Length 5034
+>>
+stream
+1. w
+0.89 0.91 0.94 RG
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 791.8899999999999864 Td
+(Clone your GitHub repository) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 771.8899999999999864 Td
+(git clone https://github.com/YOUR_ORGANIZATION/signage.git .) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 743.8899999999999864 Td
+(Create uploads folder and grant web permissions) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 723.8899999999999864 Td
+(mkdir -p public/uploads) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 710.8899999999999864 Td
+(sudo chmod -R 775 public/uploads) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 697.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 674.8899999999999864 Td
+(5.2 Create Production Environment File \(`.env`\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 659.8899999999999864 Td
+(Create the `.env` file inside `/var/www/signage/.env`:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 646.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 634.8899999999999864 Td
+(nano /var/www/signage/.env) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 621.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 604.8899999999999864 Td
+(Paste the following variables:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 591.8899999999999864 Td
+(```env) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 579.8899999999999864 Td
+(DATABASE_URL="postgresql://signage_user:TropicAirSignage2026!@localhost:5432/signage_db?schema=public") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 566.8899999999999864 Td
+(NEXTAUTH_URL="https://signage.tropicair.com") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 553.8899999999999864 Td
+(NEXTAUTH_SECRET="PasteYourGeneratedRandomSecretHere") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 540.8899999999999864 Td
+(NODE_ENV="production") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 527.8899999999999864 Td
+(PORT=3000) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 514.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 502.8899999999999864 Td
+(*\(Generate secret using `openssl rand -base64 32`\)*.) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 478.8899999999999864 Td
+(5.3 Install Dependencies & Run Database Migrations) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 463.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 441.8899999999999864 Td
+(Install npm packages) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 421.8899999999999864 Td
+(npm install) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 393.8899999999999864 Td
+(Generate Prisma Client & Push Database Schema) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 373.8899999999999864 Td
+(npx prisma generate) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 360.8899999999999864 Td
+(npx prisma db push) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 332.8899999999999864 Td
+(Build production application) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 312.8899999999999864 Td
+(npm run build) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 299.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 282.8899999999999864 m
+555.2799999999999727 282.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 257.8899999999999864 Td
+(Step 6: Process Management with PM2) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 236.8899999999999864 Td
+(Keep Next.js running 24/7 in the background with automatic restart on reboot:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 218.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 206.8899999999999864 Td
+(cd /var/www/signage) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 178.8899999999999864 Td
+(Start Next.js standalone process with PM2) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 158.8899999999999864 Td
+(pm2 start npm --name "signage-app" -- start) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 130.8899999999999864 Td
+(Verify process status) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 110.8899999999999864 Td
+(pm2 status) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 82.8899999999999864 Td
+(Save PM2 state for reboot persistence) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 62.8899999999999864 Td
+(pm2 save) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+40. 20. Td
+(Tropic Air Signage Infrastructure Guide | Page 5 of 8) Tj
+ET
+endstream
+endobj
+13 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 14 0 R
+>>
+endobj
+14 0 obj
+<<
+/Length 6337
+>>
+stream
+1. w
+0.89 0.91 0.94 RG
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 791.8899999999999864 Td
+(Setup PM2 auto-launch service on OS boot) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 771.8899999999999864 Td
+(pm2 startup) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 748.8899999999999864 Td
+(\(Copy and execute the command PM2 prints in terminal\)) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 728.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 711.8899999999999864 m
+555.2799999999999727 711.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 686.8899999999999864 Td
+(Step 7: Apache Reverse Proxy & SSE Stream Configuration) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 659.8899999999999864 Td
+(7.1 Enable Required Apache Modules) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 644.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 632.8899999999999864 Td
+(sudo a2enmod proxy proxy_http headers ssl rewrite) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 619.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 596.8899999999999864 Td
+(7.2 Create Apache VirtualHost File) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 581.8899999999999864 Td
+(Create `/etc/apache2/sites-available/signage.conf`:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 568.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 556.8899999999999864 Td
+(sudo nano /etc/apache2/sites-available/signage.conf) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 543.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 526.8899999999999864 Td
+(Paste the following complete configuration:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 513.8899999999999864 Td
+(```apache) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 501.8899999999999864 Td
+(<VirtualHost *:80>) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 488.8899999999999864 Td
+(    ServerName signage.tropicair.com) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 475.8899999999999864 Td
+(    # Replace with your server domain or IP address) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 457.8899999999999864 Td
+(    DocumentRoot /var/www/signage) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 439.8899999999999864 Td
+(    # 1. Direct NVMe Media File Access \(Zero CPU overhead\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 426.8899999999999864 Td
+(    Alias /uploads "/var/www/signage/public/uploads") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 413.8899999999999864 Td
+(    <Directory "/var/www/signage/public/uploads">) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 400.8899999999999864 Td
+(        Options -Indexes +FollowSymLinks) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 387.8899999999999864 Td
+(        AllowOverride None) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 374.8899999999999864 Td
+(        Require all granted) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 361.8899999999999864 Td
+(    </Directory>) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 343.8899999999999864 Td
+(    # 2. Real-Time Server-Sent Events \(SSE\) Stream - Unbuffered Instant Sync) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 330.8899999999999864 Td
+(    <Location "/api/screens/">) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 317.8899999999999864 Td
+(        ProxyPass "http://127.0.0.1:3000/api/screens/" flushpackets=on) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 304.8899999999999864 Td
+(        SetEnv no-gzip 1) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 291.8899999999999864 Td
+(    </Location>) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 273.8899999999999864 Td
+(    # 3. Proxy all UI & API traffic to Next.js on port 3000) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 260.8899999999999864 Td
+(    ProxyPreserveHost On) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 247.8899999999999864 Td
+(    ProxyPass / http://127.0.0.1:3000/) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 234.8899999999999864 Td
+(    ProxyPassReverse / http://127.0.0.1:3000/) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 216.8899999999999864 Td
+(    # Security Headers) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 203.8899999999999864 Td
+(    Header always set X-Content-Type-Options "nosniff") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 190.8899999999999864 Td
+(    Header always set X-Frame-Options "SAMEORIGIN") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 177.8899999999999864 Td
+(    Header always set X-XSS-Protection "1; mode=block") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 159.8899999999999864 Td
+(    ErrorLog ${APACHE_LOG_DIR}/signage_error.log) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 146.8899999999999864 Td
+(    CustomLog ${APACHE_LOG_DIR}/signage_access.log combined) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 133.8899999999999864 Td
+(</VirtualHost>) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 120.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 97.8899999999999864 Td
+(7.3 Enable Site and Reload Apache) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 82.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 70.8899999999999864 Td
+(sudo a2dissite 000-default.conf) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 57.8899999999999864 Td
+(sudo a2ensite signage.conf) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+40. 20. Td
+(Tropic Air Signage Infrastructure Guide | Page 6 of 8) Tj
+ET
+endstream
+endobj
+15 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 16 0 R
+>>
+endobj
+16 0 obj
+<<
+/Length 5725
+>>
+stream
+1. w
+0.89 0.91 0.94 RG
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 801.8899999999999864 Td
+(sudo apache2ctl configtest  # Should return 'Syntax OK') Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 788.8899999999999864 Td
+(sudo systemctl reload apache2) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 775.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 758.8899999999999864 m
+555.2799999999999727 758.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 733.8899999999999864 Td
+(Step 8: SSL Certificate Setup \(Certbot\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 712.8899999999999864 Td
+(Secure your server with free Let's Encrypt SSL:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 694.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 672.8899999999999864 Td
+(Point your DNS \(signage.tropicair.com\) to your Vultr IP before running this) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 652.8899999999999864 Td
+(sudo certbot --apache -d signage.tropicair.com) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 639.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 622.8899999999999864 Td
+(Select option `2` to automatically redirect all HTTP traffic to HTTPS. Certbot automatically configures auto-renewal!) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 604.8899999999999864 m
+555.2799999999999727 604.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 579.8899999999999864 Td
+(Step 9: Updating Client Apps \(Android APKs & Tablets\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 558.8899999999999864 Td
+(Update the hardcoded URLs in your client source code before building final APKs:) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 534.8899999999999864 Td
+(9.1 Android TV App \(`android-app/.../MainActivity.kt`\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 519.8899999999999864 Td
+(Update line 39:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 506.8899999999999864 Td
+(```kotlin) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 494.8899999999999864 Td
+(// Change from old Hostinger URL to:) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 481.8899999999999864 Td
+(webView.loadUrl\("https://signage.tropicair.com/tv"\)) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 468.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F2 10.5 Tf
+12.0749999999999993 TL
+0.2 0.255 0.333 rg
+40. 445.8899999999999864 Td
+(9.2 Tablet App \(`VVTabletApp/capacitor.config.json`\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 430.8899999999999864 Td
+(Update line 6:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 417.8899999999999864 Td
+(```json) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 405.8899999999999864 Td
+({) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 392.8899999999999864 Td
+(  "appId": "com.tropicair.vvtablet",) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 379.8899999999999864 Td
+(  "appName": "VVTabletApp",) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 366.8899999999999864 Td
+(  "webDir": "www",) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 353.8899999999999864 Td
+(  "server": {) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 340.8899999999999864 Td
+(    "url": "https://signage.tropicair.com/tablet",) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 327.8899999999999864 Td
+(    "cleartext": true) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 314.8899999999999864 Td
+(  }) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 301.8899999999999864 Td
+(}) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 288.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 271.8899999999999864 m
+555.2799999999999727 271.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 246.8899999999999864 Td
+(Step 10: Daily Automated Backup Script) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 225.8899999999999864 Td
+(Create an automatic daily backup script to store database dumps and media on NVMe:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 207.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 195.8899999999999864 Td
+(sudo nano /usr/local/bin/backup_signage.sh) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 182.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 165.8899999999999864 Td
+(Paste the following script:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 152.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 140.8899999999999864 Td
+(#!/bin/bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 127.8899999999999864 Td
+(BACKUP_DIR="/var/backups/signage") Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 114.8899999999999864 Td
+(DATE=$\(date +%Y-%m-%d_%H%M%S\)) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 96.8899999999999864 Td
+(mkdir -p $BACKUP_DIR) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 68.8899999999999864 Td
+(Dump PostgreSQL Database) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+40. 20. Td
+(Tropic Air Signage Infrastructure Guide | Page 7 of 8) Tj
+ET
+endstream
+endobj
+17 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 18 0 R
+>>
+endobj
+18 0 obj
+<<
+/Length 3437
+>>
+stream
+1. w
+0.89 0.91 0.94 RG
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 801.8899999999999864 Td
+(PGPASSWORD="TropicAirSignage2026!" pg_dump -u signage_user -h localhost signage_db > $BACKUP_DIR/db_$DATE.sql) Tj
+ET
+BT
+/F2 15 Tf
+17.25 TL
+0.118 0.227 0.541 rg
+40. 773.8899999999999864 Td
+(Keep only last 14 days of backups) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 753.8899999999999864 Td
+(find $BACKUP_DIR -type f -mtime +14 -name "*.sql" -delete) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 740.8899999999999864 Td
+(```) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 723.8899999999999864 Td
+(Make executable and add to crontab:) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 710.8899999999999864 Td
+(```bash) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 698.8899999999999864 Td
+(sudo chmod +x /usr/local/bin/backup_signage.sh) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 685.8899999999999864 Td
+(\(crontab -l 2>/dev/null; echo "0 3 * * * /usr/local/bin/backup_signage.sh"\) | crontab -) Tj
+ET
+BT
+/F6 8.5 Tf
+9.7749999999999986 TL
+0.392 0.455 0.545 rg
+40. 672.8899999999999864 Td
+(```) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 655.8899999999999864 m
+555.2799999999999727 655.8899999999999864 l
+S
+BT
+/F2 12 Tf
+13.7999999999999989 TL
+0.059 0.09 0.165 rg
+40. 630.8899999999999864 Td
+(Verification & Troubleshooting Checklist) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 609.8899999999999864 Td
+(| Test Item | Verification Command / Step | Expected Result |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 596.8899999999999864 Td
+(| :--- | :--- | :--- |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 583.8899999999999864 Td
+(| **Next.js Process** | `pm2 status` | Status: `online`, CPU: `< 1%`, RAM: `< 250MB` |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 570.8899999999999864 Td
+(| **Apache Status** | `sudo systemctl status apache2` | `active \(running\)` |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 557.8899999999999864 Td
+(| **PostgreSQL Connection** | `sudo -u postgres psql -d signage_db` | Successfully connects |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 544.8899999999999864 Td
+(| **Media Upload Test** | Upload a 10MB video via CMS Media Library | Saves to `/var/www/signage/public/uploads` |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 531.8899999999999864 Td
+(| **SSE Real-Time Sync** | Change playlist on CMS | TV updates in `< 1 second` without page reload |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 518.8899999999999864 Td
+(| **Tablet Remote Override**| Press button on `/tablet` page | TV displays override overlay immediately |) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 505.8899999999999864 Td
+(| **Memory Buffer** | `free -h` | Swap active, `> 1GB` RAM free |) Tj
+ET
+0.89 0.91 0.94 RG
+1. w
+40. 487.8899999999999864 m
+555.2799999999999727 487.8899999999999864 l
+S
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.161 0.231 rg
+40. 475.8899999999999864 Td
+(*Guide compiled for Tropic Air Digital Signage Operations \(100 Screens Infrastructure Migration\).*) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.58 0.639 0.722 rg
+40. 20. Td
+(Tropic Air Signage Infrastructure Guide | Page 8 of 8) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R ]
+/Count 8
+>>
+endobj
+19 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+20 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+21 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+22 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+23 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+24 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+25 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+26 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+27 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+28 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+29 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+30 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+31 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+32 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 19 0 R
+/F2 20 0 R
+/F3 21 0 R
+/F4 22 0 R
+/F5 23 0 R
+/F6 24 0 R
+/F7 25 0 R
+/F8 26 0 R
+/F9 27 0 R
+/F10 28 0 R
+/F11 29 0 R
+/F12 30 0 R
+/F13 31 0 R
+/F14 32 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+33 0 obj
+<<
+/Producer (jsPDF 4.2.1)
+/CreationDate (D:20260722101545-06'00')
+>>
+endobj
+34 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 35
+0000000000 65535 f 
+0000047743 00000 n 
+0000049611 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000008225 00000 n 
+0000008362 00000 n 
+0000013412 00000 n 
+0000013549 00000 n 
+0000019593 00000 n 
+0000019731 00000 n 
+0000026442 00000 n 
+0000026581 00000 n 
+0000031668 00000 n 
+0000031807 00000 n 
+0000038197 00000 n 
+0000038336 00000 n 
+0000044114 00000 n 
+0000044253 00000 n 
+0000047846 00000 n 
+0000047972 00000 n 
+0000048103 00000 n 
+0000048237 00000 n 
+0000048375 00000 n 
+0000048499 00000 n 
+0000048628 00000 n 
+0000048760 00000 n 
+0000048896 00000 n 
+0000049024 00000 n 
+0000049151 00000 n 
+0000049280 00000 n 
+0000049413 00000 n 
+0000049515 00000 n 
+0000049864 00000 n 
+0000049950 00000 n 
+trailer
+<<
+/Size 35
+/Root 34 0 R
+/Info 33 0 R
+/ID [ <B44F6C827DE6175DC7EB32FAFC0A47ED> <B44F6C827DE6175DC7EB32FAFC0A47ED> ]
+>>
+startxref
+50054
+%%EOF

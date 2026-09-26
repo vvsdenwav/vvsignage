@@ -1,0 +1,34 @@
+# Signage by VVS Technologies (signage.vvstechnologies.bz)
+# Enterprise Robots Configuration for Web & AI Crawlers
+
+User-agent: *
+Allow: /
+Disallow: /contact.php
+
+# AI Search & Large Language Model Crawlers (GEO & LLMO)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Sitemap Reference
+Sitemap: https://signage.vvstechnologies.bz/sitemap.xml

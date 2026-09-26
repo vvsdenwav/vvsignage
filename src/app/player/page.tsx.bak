@@ -1,0 +1,974 @@
+"use client";
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Wifi, MonitorPlay, CloudRain, X, Move, Sun, Cloud, CloudSnow, CloudLightning, CloudDrizzle } from "lucide-react";
+import { useSearchParams } from 'next/navigation';
+
+/* ─── Live Clock (self-updating) ─── */
+function LiveClock({ payload }: { payload: any }) {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const fmt = payload.format || 'HH:mm:ss';
+  return (
+    <div style={{ color: 'white', fontSize: '64px', fontWeight: 'bold', fontFamily: 'inherit', padding: '24px', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
+      {now.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: fmt.includes('ss') ? '2-digit' : undefined,
+        hour12: fmt.includes('A') || fmt.includes('a')
+      })}
+    </div>
+  );
+}
+
+/* ─── Live Countdown (self-updating) ─── */
+function LiveCountdown({ payload }: { payload: any }) {
+  const [remaining, setRemaining] = useState('');
+  useEffect(() => {
+    const target = payload.targetDate ? new Date(payload.targetDate).getTime() : 0;
+    if (!target) { setRemaining('Set a target date'); return; }
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) { setRemaining('00:00:00:00'); return; }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setRemaining(`${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [payload.targetDate]);
+  return (
+    <div style={{ color: 'white', fontFamily: 'inherit', textAlign: 'center', padding: '24px', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
+      {payload.label && <div style={{ fontSize: '24px', opacity: 0.8, marginBottom: '8px' }}>{payload.label}</div>}
+      <div style={{ fontSize: '56px', fontWeight: 'bold', letterSpacing: '2px' }}>{remaining}</div>
+    </div>
+  );
+}
+
+function DraggableWidget({ id, initialPos, children }: { id: string, initialPos: any, children: React.ReactNode }) {
+  const [pos, setPos] = useState({
+    top: initialPos.top || '50%',
+    left: initialPos.left || '50%',
+    width: initialPos.width || '250px',
+    height: initialPos.height || '150px',
+    transform: initialPos.transform || 'translate(-50%, -50%)'
+  });
+  
+  const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  
+  const dragStart = useRef({ x: 0, y: 0 });
+  const posStart = useRef({ top: 0, left: 0, width: 0, height: 0 });
+
+  useEffect(() => {
+    setPos({
+      top: initialPos.top || '50%',
+      left: initialPos.left || '50%',
+      width: initialPos.width || 'auto',
+      height: initialPos.height || 'auto',
+      transform: initialPos.transform || 'translate(-50%, -50%)'
+    });
+  }, [initialPos]);
+
+  // Handle Dragging via handle
+  const handlePointerDown = (e: React.PointerEvent) => {
+    e.stopPropagation();
+    setIsDragging(true);
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    const el = (e.currentTarget as HTMLElement).parentElement;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      posStart.current = { ...posStart.current, top: rect.top + rect.height / 2, left: rect.left + rect.width / 2 };
+    }
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    const newLeft = posStart.current.left + dx;
+    const newTop = posStart.current.top + dy;
+    setPos(p => ({ 
+      ...p,
+      top: `${(newTop / window.innerHeight) * 100}%`, 
+      left: `${(newLeft / window.innerWidth) * 100}%`
+    }));
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    const newLeft = posStart.current.left + dx;
+    const newTop = posStart.current.top + dy;
+    const xPct = (newLeft / window.innerWidth) * 100;
+    const yPct = (newTop / window.innerHeight) * 100;
+
+    window.parent.postMessage({ type: 'WIDGET_MOVED', widgetId: id, x: xPct, y: yPct }, '*');
+  };
+
+  // Handle Resizing
+  const handleResizeDown = (e: React.PointerEvent) => {
+    e.stopPropagation();
+    setIsResizing(true);
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    const el = (e.currentTarget as HTMLElement).parentElement;
+    if (el) {
+       const rect = el.getBoundingClientRect();
+       posStart.current = { ...posStart.current, width: rect.width, height: rect.height };
+    }
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handleResizeMove = (e: React.PointerEvent) => {
+    if (!isResizing) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    const newWidth = Math.max(50, posStart.current.width + dx);
+    const newHeight = Math.max(50, posStart.current.height + dy);
+    
+    const wPct = (newWidth / window.innerWidth) * 100;
+    const hPct = (newHeight / window.innerHeight) * 100;
+    
+    setPos(p => ({
+      ...p,
+      width: `${wPct}%`,
+      height: `${hPct}%`
+    }));
+  };
+
+  const handleResizeUp = (e: React.PointerEvent) => {
+    if (!isResizing) return;
+    setIsResizing(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    const newWidth = Math.max(50, posStart.current.width + dx);
+    const newHeight = Math.max(50, posStart.current.height + dy);
+    
+    const wPct = (newWidth / window.innerWidth) * 100;
+    const hPct = (newHeight / window.innerHeight) * 100;
+
+    window.parent.postMessage({ type: 'WIDGET_RESIZED', widgetId: id, width: wPct, height: hPct }, '*');
+  };
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.parent.postMessage({ type: 'WIDGET_DELETED', widgetId: id }, '*');
+  };
+
+  return (
+    <div 
+      className="widget-draggable-container"
+      style={{ 
+        position: 'absolute', 
+        ...pos, 
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+        zIndex: 99999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '8px',
+        transition: isDragging || isResizing ? 'none' : 'border-color 0.2s ease',
+      }}
+      onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--brand-primary)'; }}
+      onMouseOut={(e) => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'; }}
+    >
+      <div style={{ width: '100%', height: '100%', borderRadius: '8px', overflow: 'hidden' }}>
+        {children}
+      </div>
+      
+      {/* Move Handle */}
+      <div 
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        title="Move Widget"
+        style={{ 
+          position: 'absolute', top: '-14px', left: '-14px', width: '28px', height: '28px', 
+          background: 'var(--background)', border: '1px solid var(--border)', borderRadius: '50%', 
+          color: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+          cursor: isDragging ? 'grabbing' : 'grab', boxShadow: '0 2px 8px rgba(0,0,0,0.4)', touchAction: 'none',
+          zIndex: 10
+        }}
+      >
+        <Move size={14} strokeWidth={2.5} />
+      </div>
+
+      {/* Delete Button */}
+      <div 
+        onClick={handleDelete}
+        onPointerDown={(e) => e.stopPropagation()}
+        title="Delete Widget"
+        style={{ 
+          position: 'absolute', top: '-14px', right: '-14px', width: '28px', height: '28px', 
+          background: 'var(--background)', border: '1px solid var(--border)', borderRadius: '50%', 
+          color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+          cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+          zIndex: 10
+        }}
+      >
+        <X size={14} strokeWidth={2.5} />
+      </div>
+
+      {/* Resize Handle */}
+      <div 
+        onPointerDown={handleResizeDown}
+        onPointerMove={handleResizeMove}
+        onPointerUp={handleResizeUp}
+        title="Resize Widget"
+        style={{ 
+          position: 'absolute', bottom: '-8px', right: '-8px', width: '16px', height: '16px', 
+          background: 'var(--brand-primary)', border: '2px solid var(--background)', borderRadius: '50%', 
+          cursor: 'nwse-resize', touchAction: 'none', boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+          zIndex: 10
+        }}
+      />
+    </div>
+  );
+}
+
+import { Suspense } from 'react';
+
+function PlayerContent() {
+  const searchParams = useSearchParams();
+  const queryScreenId = searchParams.get('screenId');
+  const isEditMode = searchParams.get('editMode') === 'true';
+  
+  const [pairingCode, setPairingCode] = useState<string | null>(null);
+  const [screenId, setScreenId] = useState<string | null>(queryScreenId);
+  const [isPaired, setIsPaired] = useState(!!queryScreenId);
+  const [playlist, setPlaylist] = useState<any>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showTestOverlay, setShowTestOverlay] = useState(false);
+  const [overrideType, setOverrideType] = useState<string | null>(null);
+  const [overridePayload, setOverridePayload] = useState<any>(null);
+  
+  // Real-time widget data (Weather, RSS)
+  const [weatherData, setWeatherData] = useState<any>(null);
+  const [rssData, setRssData] = useState<any[]>([]);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 1. Boot up and register (or restore from localStorage)
+  useEffect(() => {
+    const bootSequence = async () => {
+      const savedScreenId = localStorage.getItem('vvsignage_screen_id');
+      
+      if (savedScreenId) {
+        try {
+          const res = await fetch(`/api/screens/${savedScreenId}`);
+          if (res.ok) {
+            const screen = await res.json();
+            setScreenId(savedScreenId);
+            if (!screen.pairingCode) {
+              // Screen is fully paired
+              setIsPaired(true);
+            } else {
+              // Screen still has a pairing code
+              setPairingCode(screen.pairingCode);
+            }
+            return;
+          } else {
+            // Screen was deleted, fall through to register
+            localStorage.removeItem('vvsignage_screen_id');
+          }
+        } catch (e) {
+          console.error("Failed to restore screen", e);
+        }
+      }
+
+      // No saved ID or failed to restore, register a new screen
+      try {
+        const res = await fetch('/api/screens/register', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          setPairingCode(data.pairingCode);
+          setScreenId(data.id);
+          localStorage.setItem('vvsignage_screen_id', data.id);
+        }
+      } catch (err) {
+        console.error("Failed to register", err);
+      }
+    };
+    bootSequence();
+  }, []);
+
+  // 2. Poll for pairing status
+  useEffect(() => {
+    if (!pairingCode || isPaired) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/screens/status?code=${pairingCode}`);
+        const data = await res.json();
+        if (data.paired) {
+          setIsPaired(true);
+          clearInterval(interval);
+        }
+      } catch (err) {
+        console.error("Polling error", err);
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [pairingCode, isPaired]);
+
+  // 3. Setup SSE and fetch config once paired
+  useEffect(() => {
+    if (!isPaired || !screenId) return;
+
+    const fetchConfig = async () => {
+      try {
+        const res = await fetch(`/api/screens/${screenId}/config`);
+        if (res.status === 404) {
+          // The screen was deleted from the CMS!
+          localStorage.removeItem('vvsignage_screen_id');
+          window.location.reload();
+          return;
+        }
+        
+        const config = await res.json();
+        
+        // Handle overrides
+        setOverrideType(config.overrideType || null);
+        setOverridePayload(config.overridePayload || null);
+
+        if (config.playlist) {
+          setPlaylist(config.playlist);
+          // Fetch dynamic data if needed by widgets
+          fetchDynamicWidgetData(config.playlist);
+        } else {
+          setPlaylist(null);
+        }
+      } catch (err) {
+        console.error("Config fetch error", err);
+      }
+    };
+
+    fetchConfig();
+    const configInterval = setInterval(fetchConfig, 60000); // Poll every minute for schedule changes
+
+    // Subscribe to real-time events from the CMS (Commits)
+    const eventSource = new EventSource(`/api/screens/${screenId}/stream`);
+    
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'UPDATE_CONFIG') {
+          console.log("Received live commit update! Reloading playlist...");
+          fetchConfig();
+          setCurrentIndex(0); // Restart from beginning of new playlist
+        } else if (data.type === 'TEST_CONNECTION') {
+          setShowTestOverlay(true);
+          setTimeout(() => setShowTestOverlay(false), 3000); // Hide after 3 seconds
+        } else if (data.type === 'SYNC_STATE' && isEditMode) {
+          if (data.currentIndex !== undefined) {
+            setCurrentIndex(data.currentIndex);
+          }
+        }
+      } catch (err) {
+        console.error("Event parse error", err);
+      }
+    };
+
+    return () => {
+      clearInterval(configInterval);
+      eventSource.close();
+    };
+  }, [isPaired, screenId]);
+
+  // Auto-clear override based on duration
+  useEffect(() => {
+    if (overrideType && overridePayload?.duration && overridePayload.duration > 0 && screenId) {
+      const timer = setTimeout(async () => {
+        // Clear locally for instant feedback
+        setOverrideType(null);
+        setOverridePayload(null);
+        // Clear in DB
+        try {
+          await fetch(`/api/screens/${screenId}/override`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: null })
+          });
+        } catch (e) {
+          console.error('Failed to clear override', e);
+        }
+      }, overridePayload.duration * 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [overrideType, overridePayload, screenId]);
+
+  // Fetch dynamic widget data (Weather, RSS) based on playlist config
+  const fetchDynamicWidgetData = async (pl: any) => {
+    const allWidgets: any[] = [];
+    if (pl.overlays) allWidgets.push(...pl.overlays);
+    if (pl.items) pl.items.forEach((item: any) => { if (item.type === 'widget') allWidgets.push(item); });
+
+    allWidgets.forEach(async w => {
+      if (w.type === 'weather' || w.widgetType === 'weather') {
+        try {
+          const payload = w.dataPayload || {};
+          const loc = payload.location || 'Miami';
+          const unit = payload.unit === 'c' ? 'c' : 'f';
+          const query = payload.lat && payload.lon 
+            ? `lat=${payload.lat}&lon=${payload.lon}&location=${encodeURIComponent(loc)}&unit=${unit}` 
+            : `location=${encodeURIComponent(loc)}&unit=${unit}`;
+          const res = await fetch(`/api/weather?${query}`);
+          if (res.ok) setWeatherData(await res.json());
+        } catch (e) { console.error("Weather fetch failed", e); }
+      }
+      if (w.type === 'rss' || w.widgetType === 'rss') {
+        try {
+          const url = w.dataPayload?.url;
+          if (url) {
+            const res = await fetch(`/api/rss?url=${encodeURIComponent(url)}`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.items) setRssData(data.items);
+            }
+          }
+        } catch (e) { console.error("RSS fetch failed", e); }
+      }
+    });
+  };
+
+  // 4. Playback Engine Loop
+  useEffect(() => {
+    // If edit mode, the player doesn't advance automatically. It listens to SYNC_STATE.
+    if (isEditMode) return;
+    
+    // If there's an override, don't run the playlist timer
+    if (overrideType) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      return;
+    }
+
+    if (!playlist || !playlist.items || playlist.items.length === 0) return;
+
+    const currentItem = playlist.items[currentIndex];
+    if (timerRef.current) clearTimeout(timerRef.current);
+
+    const reportProofOfPlay = async () => {
+      if (!screenId || !currentItem.id) return;
+      try {
+        await fetch('/api/analytics/proof-of-play', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ screenId, mediaId: currentItem.id })
+        });
+      } catch (e) {
+        console.error("Failed to report proof of play", e);
+      }
+    };
+
+    // If it's an image, web embed, or standalone widget, set a timer based on duration
+    if (currentItem.type === 'image' || currentItem.type === 'web' || currentItem.type === 'widget') {
+      const durationMs = (currentItem.duration || 10) * 1000;
+      timerRef.current = setTimeout(() => {
+        reportProofOfPlay();
+        setCurrentIndex((prev) => (prev + 1) % playlist.items.length);
+      }, durationMs);
+    }
+    
+    // For videos, we rely on the onEnded event on the video element itself, 
+    // unless a specific duration was forced.
+    if (currentItem.type === 'video') {
+       if (currentItem.duration) {
+          const durationMs = currentItem.duration * 1000;
+          timerRef.current = setTimeout(() => {
+            reportProofOfPlay();
+            setCurrentIndex((prev) => (prev + 1) % playlist.items.length);
+          }, durationMs);
+       }
+    }
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [playlist, currentIndex, overrideType]);
+
+  // Handle Draft Preview Updates from Visual Editor
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data?.type === 'PREVIEW_DRAFT_OVERLAYS' && isEditMode) {
+        setPlaylist((prev: any) => prev ? { ...prev, overlays: e.data.overlays } : prev);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isEditMode]);
+
+  // 5. Broadcast Sync State
+  useEffect(() => {
+    if (isEditMode || !screenId) return;
+    
+    const broadcastSync = async () => {
+      try {
+        await fetch(`/api/screens/${screenId}/sync`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentIndex })
+        });
+      } catch (err) {
+        // Ignore failures to avoid spam
+      }
+    };
+    
+    // Broadcast whenever the index changes
+    broadcastSync();
+  }, [currentIndex, isEditMode, screenId]);
+
+  const handleVideoEnded = async () => {
+    if (!playlist || !playlist.items) return;
+    const currentItem = playlist.items[currentIndex];
+    
+    // Report proof of play
+    if (screenId && currentItem.id) {
+      try {
+        await fetch('/api/analytics/proof-of-play', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ screenId, mediaId: currentItem.id })
+        });
+      } catch (e) {
+        console.error("Failed to report proof of play", e);
+      }
+    }
+
+    // Only advance if it doesn't have a forced duration (which would be handled by the timer)
+    if (!currentItem.duration) {
+      setCurrentIndex((prev) => (prev + 1) % playlist.items.length);
+    }
+  };
+
+  // RENDER STATES
+  if (!isPaired) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', width: '100vw', backgroundColor: '#000', color: 'white', fontFamily: 'inherit' }}>
+        <MonitorPlay size={80} style={{ color: 'var(--brand-primary)', marginBottom: '32px' }} />
+        <h1 style={{ fontSize: '32px', marginBottom: '16px', color: '#A0AEC0' }}>Waiting for CMS...</h1>
+        <p style={{ fontSize: '20px', color: '#718096', marginBottom: '40px' }}>Enter this code in your VVSignage dashboard</p>
+        <div style={{ fontSize: '100px', fontWeight: 'bold', letterSpacing: '8px', color: 'white', textShadow: '0 0 40px rgba(255,255,255,0.2)' }}>
+          {pairingCode || '------'}
+        </div>
+      </div>
+    );
+  }
+
+  if (overrideType === 'html' && overridePayload) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', backgroundColor: overridePayload.bgColor || '#1a1a1a', color: 'white', alignItems: 'center', justifyContent: 'center', fontFamily: 'inherit', animation: 'fadeIn 0.5s ease-out' }}>
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes pulseText {
+            0% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.8; transform: scale(1); }
+          }
+        `}} />
+        <h1 style={{ fontSize: '10vw', margin: 0, fontWeight: '900', color: overridePayload.color || 'white', textTransform: 'uppercase', letterSpacing: '0.05em', textShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+          {overridePayload.title}
+        </h1>
+        <h2 style={{ fontSize: '4vw', margin: '20px 0 0 0', fontWeight: '400', opacity: 0.9, animation: 'pulseText 2s infinite ease-in-out' }}>
+          {overridePayload.subtitle}
+        </h2>
+      </div>
+    );
+  }
+
+  if (overrideType === 'image' && overridePayload) {
+    return (
+      <div style={{ width: '100vw', height: '100vh', backgroundColor: 'black', overflow: 'hidden' }}>
+        <img src={overridePayload.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      </div>
+    );
+  }
+
+  if (overrideType === 'video' && overridePayload) {
+    return (
+      <div style={{ width: '100vw', height: '100vh', backgroundColor: 'black', overflow: 'hidden' }}>
+        <video src={overridePayload.url} autoPlay loop muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      </div>
+    );
+  }
+
+  if (!playlist || !playlist.items || playlist.items.length === 0) {
+    return (
+      <div style={{ display: 'flex', height: '100vh', width: '100vw', backgroundColor: 'var(--background)', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+        <div style={{ textAlign: 'center' }}>
+          <MonitorPlay size={64} style={{ marginBottom: '16px', opacity: 0.5 }} />
+          <h2>Connected. Waiting for Playlist...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // Helper to render a specific widget type
+
+  const renderWidgetContent = (widgetInfo: any) => {
+    // If widgetInfo is an overlay, it has a widget object inside it.
+    // If it's a playlist item of type 'widget', it is the widget itself.
+    // In live player, the config endpoint flattens the overlay, so widgetInfo IS the widget.
+    const widget = widgetInfo.widget || widgetInfo;
+    const type = widget.type;
+    let payload: any = {};
+    if (typeof widget.dataPayload === 'string') {
+      try { payload = JSON.parse(widget.dataPayload || '{}'); } catch(e){}
+    } else if (widget.dataPayload && typeof widget.dataPayload === 'object') {
+      payload = widget.dataPayload;
+    }
+    
+    
+    if (type === 'clock') {
+      return <LiveClock payload={payload} />;
+    }
+
+    if (type === 'youtube') {
+      const videoId = payload.videoId;
+      return (
+        <div style={{ width: '100%', height: '100%', background: 'black', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+          {videoId ? (
+            <iframe 
+              width="100%" 
+              height="100%" 
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`} 
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen>
+            </iframe>
+          ) : (
+            <div style={{ color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>Invalid YouTube Video ID</div>
+          )}
+        </div>
+      );
+    }
+
+    if (type === 'weather') {
+      let code = weatherData?.code ?? 0; // Default to Sunny
+      let temp = weatherData?.temperature;
+      let unit = weatherData?.unit || 'F';
+      
+      // Override for visual testing from the properties panel
+      if (payload.mockCondition && payload.mockCondition !== 'auto') {
+        const mockMap: any = { 'sunny': 0, 'cloudy': 3, 'rain': 61, 'snow': 71, 'thunderstorm': 95 };
+        code = mockMap[payload.mockCondition];
+      }
+
+      let WeatherIcon = Sun;
+      if (code >= 1 && code <= 3) WeatherIcon = Cloud;
+      else if (code >= 45 && code <= 48) WeatherIcon = Cloud; // Fog
+      else if (code >= 51 && code <= 55) WeatherIcon = CloudDrizzle;
+      else if (code >= 61 && code <= 67) WeatherIcon = CloudRain;
+      else if (code >= 71 && code <= 77) WeatherIcon = CloudSnow;
+      else if (code >= 80 && code <= 82) WeatherIcon = CloudRain;
+      else if (code >= 95) WeatherIcon = CloudLightning;
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'white', fontFamily: 'inherit', padding: '24px', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
+          <WeatherIcon size={64} style={{ marginBottom: '8px' }} />
+          <div style={{ fontSize: '48px', fontWeight: 'bold' }}>{temp !== undefined ? `${temp}°${unit}` : `--°${payload.unit === 'c' ? 'C' : 'F'}`}</div>
+          <div style={{ fontSize: '24px', opacity: 0.8 }}>{payload.location || 'Miami, FL'}</div>
+        </div>
+      );
+    }
+
+    if (type === 'shape') {
+      const shapeType = payload.shapeType || 'rectangle'; // rectangle, circle, rounded
+      let borderRadius = '0px';
+      if (shapeType === 'circle') borderRadius = '50%';
+      if (shapeType === 'rounded') borderRadius = '16px';
+      
+      return (
+        <div style={{ 
+          width: '100%', 
+          height: '100%', 
+          backgroundColor: payload.backgroundColor || 'var(--brand-primary)',
+          borderRadius,
+          border: payload.border ? `4px solid ${payload.borderColor || 'white'}` : 'none',
+          boxShadow: payload.shadow ? '0 10px 30px rgba(0,0,0,0.5)' : 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: payload.textColor || 'white',
+          fontSize: '24px',
+          fontWeight: 'bold'
+        }}>
+          {payload.text || ''}
+        </div>
+      );
+    }
+
+    if (type === 'youtube') {
+      // Extract video ID from URL
+      let videoId = '';
+      if (payload.url) {
+        const match = payload.url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^"&?\/\s]{11})/);
+        videoId = match ? match[1] : '';
+      }
+      return (
+        <div style={{ width: '640px', height: '360px', background: 'black', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+          {videoId ? (
+            <iframe 
+              width="100%" 
+              height="100%" 
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`} 
+              title="YouTube video player" 
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen>
+            </iframe>
+          ) : (
+            <div style={{ color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>Invalid YouTube URL</div>
+          )}
+        </div>
+      );
+    }
+
+    if (type === 'ticker') {
+      const speed = payload.speed || 50; // default 50
+      // Calculate animation duration based on speed (1-100), where 100 is fastest (e.g. 5s), 1 is slowest (e.g. 60s)
+      const duration = 65 - (speed * 0.6);
+      return (
+        <div style={{ width: '100vw', background: 'rgba(0,0,0,0.85)', color: 'white', padding: '16px 32px', overflow: 'hidden', whiteSpace: 'nowrap', borderTop: '2px solid var(--brand-primary)', position: 'absolute', bottom: 0, left: 0 }}>
+          <div style={{ display: 'inline-block', animation: `ticker ${duration}s linear infinite`, fontSize: '32px', fontWeight: '600', fontFamily: 'inherit' }}>
+            {payload.text || 'Your scrolling text goes here...'}
+          </div>
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes ticker {
+              0% { transform: translateX(100vw); }
+              100% { transform: translateX(-100%); }
+            }
+          `}} />
+        </div>
+      );
+    }
+
+    if (type === 'webpage' || type === 'embed') {
+      return (
+        <div style={{ width: '800px', height: '600px', background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+          {payload.url ? (
+            <iframe src={payload.url} style={{ width: '100%', height: '100%', border: 'none' }} />
+          ) : (
+            <div style={{ color: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>No URL Configured</div>
+          )}
+        </div>
+      );
+    }
+
+    if (type === 'rss') {
+      return (
+        <div style={{ width: '100vw', background: 'rgba(0,0,0,0.8)', color: 'white', padding: '16px 32px', overflow: 'hidden', whiteSpace: 'nowrap', borderTop: '2px solid var(--brand-primary)', position: 'absolute', bottom: 0, left: 0 }}>
+          <div style={{ display: 'inline-block', animation: 'ticker 30s linear infinite', fontSize: '28px', fontFamily: 'inherit' }}>
+            {rssData.length > 0 
+              ? rssData.map(item => item.title).join(' • ')
+              : 'Loading news...'}
+          </div>
+        </div>
+      );
+    }
+
+    if (['label', 'text'].includes(type)) {
+      const fontSize = payload.fontSize ? `${payload.fontSize}px` : (type === 'label' ? '32px' : '20px');
+      const textColor = payload.color || 'white';
+      return (
+        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: textColor, fontFamily: 'inherit', padding: '16px', overflow: 'hidden' }}>
+          <div 
+             contentEditable={isEditMode}
+             suppressContentEditableWarning
+             onBlur={(e) => {
+               if (isEditMode && typeof window !== 'undefined') {
+                  window.parent.postMessage({ type: 'WIDGET_TEXT_UPDATED', widgetId: widgetInfo.id || widgetInfo.widgetId, text: e.currentTarget.innerText }, '*');
+               }
+             }}
+             style={{ fontSize, fontWeight: type === 'label' ? 'bold' : 'normal', textAlign: 'center', outline: 'none', cursor: isEditMode ? 'text' : 'inherit', width: '100%', textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
+          >
+            {payload.text || (isEditMode ? 'Click to edit…' : '')}
+          </div>
+        </div>
+      );
+    }
+
+    if (type === 'image' || type === 'webimage') {
+      return (
+        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+           {payload.url ? (
+             <img src={payload.url} style={{ width: '100%', height: '100%', objectFit: (payload.objectFit || 'contain') as any }} alt="" />
+           ) : (
+             <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '16px' }}>No Image URL configured</div>
+           )}
+        </div>
+      );
+    }
+
+    if (type === 'video' || type === 'streaming') {
+      return (
+        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+           {payload.url ? (
+             <video src={payload.url} autoPlay loop muted playsInline style={{ width: '100%', height: '100%', objectFit: (payload.objectFit || 'cover') as any }} />
+           ) : (
+             <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '16px' }}>No Video URL configured</div>
+           )}
+        </div>
+      );
+    }
+
+    if (type === 'countdown') {
+      return <LiveCountdown payload={payload} />;
+    }
+
+    if (type === 'embed') {
+      return (
+        <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+          {payload.url ? (
+            <iframe src={payload.url} style={{ width: '100%', height: '100%', border: 'none' }} />
+          ) : (
+            <div style={{ color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>No Embed URL</div>
+          )}
+        </div>
+      );
+    }
+
+    // Generic Fallback Placeholder
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', minWidth: '150px', minHeight: '100px', background: 'rgba(20, 20, 30, 0.4)', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: 'white', fontFamily: 'inherit' }}>
+          <div style={{ fontSize: '18px', fontWeight: 'bold', textTransform: 'capitalize' }}>{type} Widget</div>
+          <div style={{ fontSize: '12px', opacity: 0.6, marginTop: '4px' }}>Placeholder</div>
+        </div>
+    );
+  };
+
+
+  const getWidgetPositionStyles = (position: string, dataPayload?: any) => {
+    const defaultSize = { width: '250px', height: '150px' };
+    
+    if (position === 'custom' && dataPayload) {
+      try {
+        const parsed = typeof dataPayload === 'string' ? JSON.parse(dataPayload) : dataPayload;
+        if (parsed.x !== undefined && parsed.y !== undefined) {
+          const style: any = { top: `${parsed.y}%`, left: `${parsed.x}%`, transform: 'translate(-50%, -50%)' };
+          const formatDim = (val: any, def: string) => {
+            if (val === undefined || val === null) return def;
+            if (typeof val === 'number') return `${val}%`;
+            if (typeof val === 'string' && !val.endsWith('%') && !val.endsWith('px')) return `${val}%`;
+            return val;
+          };
+          style.width = formatDim(parsed.width, defaultSize.width);
+          style.height = formatDim(parsed.height, defaultSize.height);
+          return style;
+        }
+      } catch (e) {
+        // Fallback
+      }
+    }
+
+    switch (position) {
+      case 'center': return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)', ...defaultSize };
+      case 'top-left': return { top: 0, left: 0, ...defaultSize };
+      case 'top-right': return { top: 0, right: 0, ...defaultSize };
+      case 'bottom-left': return { bottom: 0, left: 0, ...defaultSize };
+      case 'bottom-right': return { bottom: 0, right: 0, ...defaultSize };
+      case 'bottom-bar': return { bottom: 0, left: 0, width: '100vw', height: '60px' };
+      case 'full-screen': return { top: 0, left: 0, width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+      default: return { top: 0, right: 0, ...defaultSize }; // default top-right
+    }
+  };
+
+  const currentItem = playlist?.items?.[currentIndex];
+
+  return (
+    <div style={{ width: '100vw', height: '100vh', backgroundColor: 'black', overflow: 'hidden', position: 'relative' }}>
+      {/* Primary Slide Content */}
+      {currentItem?.type === 'image' && (
+        <img 
+          src={currentItem.url} 
+          alt="signage content" 
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+        />
+      )}
+      
+      {currentItem?.type === 'video' && (
+        <video 
+          ref={videoRef}
+          src={currentItem.url} 
+          autoPlay 
+          muted 
+          onEnded={handleVideoEnded}
+          onError={handleVideoEnded}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      )}
+
+      {currentItem?.type === 'web' && (
+        <iframe 
+          src={currentItem.url}
+          style={{ width: '100%', height: '100%', border: 'none' }}
+        />
+      )}
+
+      {currentItem?.type === 'widget' && (
+        <div style={{ width: '100%', height: '100%', backgroundColor: currentItem.backgroundColor || 'var(--card-bg)', ...getWidgetPositionStyles('full-screen') }}>
+          {renderWidgetContent(currentItem)}
+        </div>
+      )}
+
+      {/* Global Overlays Layer */}
+      {playlist.overlays && playlist.overlays.length > 0 && (
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: isEditMode ? 'auto' : 'none', zIndex: 9000 }}>
+          {playlist.overlays.map((overlay: any) => {
+            // In live player, the config endpoint flattens the overlay.
+            // In the visual editor, the playlist endpoint nests it in overlay.widget.
+            const widgetPos = overlay.widget?.position || overlay.position || 'center';
+            const widgetPayload = overlay.widget?.dataPayload || overlay.dataPayload;
+            const initialPos = getWidgetPositionStyles(widgetPos, widgetPayload);
+            const content = (
+              <div 
+                style={{ 
+                  position: isEditMode ? 'relative' : 'absolute', 
+                  backgroundColor: overlay.widget?.backgroundColor || overlay.backgroundColor ? (overlay.widget?.backgroundColor || overlay.backgroundColor) : 'transparent',
+                  width: '100%',
+                  height: '100%',
+                  ...(!isEditMode ? initialPos : {})
+                }}
+              >
+                {renderWidgetContent(overlay)}
+              </div>
+            );
+
+            return isEditMode ? (
+              <DraggableWidget key={overlay.id} id={overlay.widgetId || overlay.id} initialPos={initialPos}>
+                {content}
+              </DraggableWidget>
+            ) : (
+              <div key={overlay.id}>{content}</div>
+            );
+          })}
+        </div>
+      )}
+
+      {showTestOverlay && (
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(34, 197, 94, 0.9)', color: 'white', zIndex: 9999, animation: 'fadeIn 0.3s ease-out' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Wifi size={100} style={{ marginBottom: '20px' }} />
+            <h1 style={{ fontSize: '40px', margin: 0 }}>Connection Successful</h1>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+export default function PlayerPage() { return ( <Suspense fallback={<div style={{ backgroundColor: '#000', width: '100vw', height: '100vh' }}></div>}> <PlayerContent /> </Suspense> ); }

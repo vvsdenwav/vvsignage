@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Signage Pricing - VVSignage vs NoviSign</title>
+  <style>
+    :root {
+      --color-primary: #0284c7;
+      --color-primary-dark: #0369a1;
+      --color-primary-light: #e0f2fe;
+      --color-accent: #f59e0b;
+      --color-accent-light: #fef3c7;
+      --color-success: #10b981;
+      --color-success-light: #d1fae5;
+      --color-dark: #0f172a;
+      --color-gray-dark: #334155;
+      --color-gray-medium: #64748b;
+      --color-gray-light: #f8fafc;
+      --color-border: #cbd5e1;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    @page {
+      size: letter;
+      margin: 10mm 10mm 10mm 10mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      color: var(--color-gray-dark);
+      background-color: #ffffff;
+      line-height: 1.4;
+      font-size: 11.5px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .sheet {
+      padding: 16px;
+      max-width: 100%;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2.5px solid var(--color-primary);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+
+    .title-area h1 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--color-dark);
+    }
+
+    .title-area h1 span {
+      color: var(--color-primary);
+    }
+
+    .title-area p {
+      font-size: 11px;
+      color: var(--color-gray-medium);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge {
+      background: var(--color-success-light);
+      color: #065f46;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-align: right;
+      border: 1px solid var(--color-success);
+    }
+
+    h2 {
+      font-size: 13px;
+      color: var(--color-dark);
+      margin-top: 12px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-left: 3px solid var(--color-primary);
+      padding-left: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+      font-size: 10.5px;
+    }
+
+    th, td {
+      padding: 6px 8px;
+      border: 1px solid var(--color-border);
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--color-gray-light);
+      color: var(--color-dark);
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .highlight-row {
+      background-color: #f0fdf4 !important;
+      font-weight: 600;
+    }
+
+    .highlight-cell {
+      color: #166534;
+      font-weight: 700;
+    }
+
+    .savings-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      background: #16a34a;
+      color: #ffffff;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .card {
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: 10px;
+      background: #fafbfd;
+    }
+
+    .card.winner {
+      border-color: var(--color-success);
+      background: var(--color-success-light);
+    }
+
+    .card h3 {
+      font-size: 11.5px;
+      margin-bottom: 4px;
+      color: var(--color-dark);
+      font-weight: 700;
+    }
+
+    .card p {
+      font-size: 10px;
+      color: var(--color-gray-dark);
+      margin-bottom: 2px;
+    }
+
+    .callout {
+      background: var(--color-primary-light);
+      border-left: 3px solid var(--color-primary);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      margin-bottom: 12px;
+    }
+
+    .check { color: #16a34a; font-weight: bold; }
+    .cross { color: #dc2626; font-weight: bold; }
+    .warn { color: #d97706; font-weight: bold; }
+
+    .footer {
+      border-top: 1px solid var(--color-border);
+      padding-top: 8px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      color: var(--color-gray-medium);
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <header>
+      <div class="title-area">
+        <h1>Direct Price Comparison: <span>VVSignage vs NoviSign</span></h1>
+        <p>Official Market Pricing Guide (San Pedro, Ambergris Caye)</p>
+      </div>
+      <div class="badge">
+        Guaranteed Lower Than NoviSign<br>
+        Currency: BZD ($1 USD = $2 BZD)
+      </div>
+    </header>
+
+    <div class="callout">
+      <strong>Competitive Guarantee:</strong> VVSignage offers prices <strong>strictly lower</strong> than NoviSign's published rates, with <em>no annual lock-in, in-person on-island installation, local BZD payments, and the exclusive Tablet Remote Override App</em>.
+    </div>
+
+    <h2>1. Direct Plan-for-Plan Price & Feature Match</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Tier Category</th>
+          <th>NoviSign Live Rate (USD / BZD)</th>
+          <th>VVSignage Rate (USD / BZD)</th>
+          <th>Price Advantage</th>
+          <th>Key Extra Features Included</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row">
+          <td><strong>Community / Micro-Biz</strong><br><small>(Taco stands, food shacks)</small></td>
+          <td>$14 USD / $28 BZD<br><small>Requires 1-Yr Upfront Lock-in</small></td>
+          <td class="highlight-cell"><strong>$10 USD / $20 BZD</strong><br><small>Month-to-Month ($5 BZD/week)</small></td>
+          <td><span class="savings-badge">29% CHEAPER</span></td>
+          <td><span class="check">✔ WhatsApp Menu Concierge<br>✔ Google Review QR</span></td>
+        </tr>
+        <tr class="highlight-row">
+          <td><strong>Starter Plan</strong><br><small>(Dive shops, cafes, boutiques)</small></td>
+          <td>$14 – $17 USD / $28 – $34 BZD<br><small>Requires 1-Yr Upfront Lock-in</small></td>
+          <td class="highlight-cell"><strong>$12 USD / $24 BZD</strong><br><small>Month-to-Month</small></td>
+          <td><span class="savings-badge">15% - 30% CHEAPER</span></td>
+          <td><span class="check">✔ 100% Offline Engine<br>✔ On-Site Island Setup</span></td>
+        </tr>
+        <tr class="highlight-row">
+          <td><strong>Pro Plan (Full Suite)</strong><br><small>(Hotels, bars, water taxis)</small></td>
+          <td>$25 USD / $50 BZD<br><small>Requires 1-Yr Upfront Lock-in</small></td>
+          <td class="highlight-cell"><strong>$19 USD / $38 BZD</strong><br><small>Month-to-Month</small></td>
+          <td><span class="savings-badge">24% CHEAPER</span></td>
+          <td><span class="check">✔ Tablet Remote Override App<br>✔ Proof of Play & Audit Logs</span></td>
+        </tr>
+        <tr class="highlight-row">
+          <td><strong>Multi-Screen Network (5+ Screens)</strong><br><small>(Terminals, resort chains)</small></td>
+          <td>$25 USD / $50 BZD per screen</td>
+          <td class="highlight-cell"><strong>$15 USD / $30 BZD</strong> per screen</td>
+          <td><span class="savings-badge">40% CHEAPER</span></td>
+          <td><span class="check">✔ Dedicated Cloud Instance<br>✔ 24/7 Priority Support</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. Feature & Service Comparison</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Capability</th>
+          <th>NoviSign ($14 – $25/mo)</th>
+          <th>VVSignage Belize ($10 – $19/mo)</th>
+          <th>Why VVSignage Wins</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Contract Commitment</strong></td>
+          <td><span class="cross">✘ 1-Year Upfront Credit Card Lock-in</span></td>
+          <td><span class="check">✔ Month-to-Month (Cancel Anytime)</span></td>
+          <td>Zero financial risk for local businesses.</td>
+        </tr>
+        <tr>
+          <td><strong>Payment Currency</strong></td>
+          <td><span class="cross">✘ US Dollars Credit Card Only</span></td>
+          <td><span class="check">✔ DigiWallet, E-kyash, Belize Bank, Cash</span></td>
+          <td>No international bank fees or exchange charges.</td>
+        </tr>
+        <tr>
+          <td><strong>Tablet Remote Override</strong></td>
+          <td><span class="cross">✘ Not Available (Must use laptop CMS)</span></td>
+          <td><span class="check">✔ Dedicated Tablet App (`VVTabletApp`)</span></td>
+          <td>One-tap alerts for boat delays, happy hour, emergencies.</td>
+        </tr>
+        <tr>
+          <td><strong>Hardware & Maintenance</strong></td>
+          <td><span class="cross">✘ 100% DIY (No support on island)</span></td>
+          <td><span class="check">✔ In-Person Setup on Ambergris Caye</span></td>
+          <td>Local technician ready to help in San Pedro.</td>
+        </tr>
+        <tr>
+          <td><strong>Low-Season Policy</strong></td>
+          <td><span class="cross">✘ Billed 12 Months Continuous</span></td>
+          <td><span class="check">✔ 60-Day Low Season Freeze (Sept/Oct)</span></td>
+          <td>Pause billing during slow tourism months.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Real-World Client Savings Example</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>1 Screen (Taco Stand / Cafe)</h3>
+        <p><strong>NoviSign Tier 1:</strong> $336 BZD / yr ($28/mo paid upfront)</p>
+        <p><strong>VVSignage:</strong> $240 BZD / yr ($20/mo)</p>
+        <p style="color: #16a34a; font-weight: bold; margin-top: 4px;">✔ Saves $96 BZD/yr + WhatsApp design help!</p>
+      </div>
+
+      <div class="card">
+        <h3>3 Screens (Dive Shop / Bar)</h3>
+        <p><strong>NoviSign Tier 2:</strong> $1,224 BZD / yr ($102/mo)</p>
+        <p><strong>VVSignage Starter:</strong> $864 BZD / yr ($72/mo)</p>
+        <p style="color: #16a34a; font-weight: bold; margin-top: 4px;">✔ Saves $360 BZD/yr + in-person support!</p>
+      </div>
+
+      <div class="card winner">
+        <h3>5 Screens (Hotel / Water Taxi)</h3>
+        <p><strong>NoviSign Tier 3:</strong> $3,000 BZD / yr ($250/mo)</p>
+        <p><strong>VVSignage Pro:</strong> $1,800 BZD / yr ($150/mo)</p>
+        <p style="color: #16a34a; font-weight: bold; margin-top: 4px;">✔ Saves $1,200 BZD/yr + Tablet Override App!</p>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>VVSignage Belize - Ambergris Caye Pricing Intelligence</span>
+      <span>Confidential Sales Field Sheet</span>
+      <span>Page 1 of 1</span>
+    </div>
+  </div>
+</body>
+</html>
