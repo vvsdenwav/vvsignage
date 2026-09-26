@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Globe, UploadCloud, FileVideo, Trash2, Folder, FolderPlus, MoreVertical, Search, ArrowDownAZ, Clock, LayoutTemplate, Edit2, ExternalLink, FolderInput, Sparkles, Tag as TagIcon, Calendar, ShieldCheck, Send, Plus, X, CheckCircle2, AlertTriangle } from 'lucide-react';
-import { upload } from '@vercel/blob/client';
 import { useSession } from 'next-auth/react';
 import { useI18n } from '@/lib/i18n';
 
@@ -111,17 +110,23 @@ export function MediaLibraryTab({ mediaAssets, folders, refreshMedia, refreshFol
     setIsUploading(true);
     
     try {
-      await upload(file.name, file, {
-        access: 'public',
-        handleUploadUrl: '/api/media/upload',
-        clientPayload: selectedFolderId ? JSON.stringify({ folderId: selectedFolderId }) : undefined,
+      const formData = new FormData();
+      formData.append('file', file);
+      if (selectedFolderId) {
+        formData.append('folderId', selectedFolderId);
+      }
+
+      const res = await fetch('/api/media/upload', {
+        method: 'POST',
+        body: formData,
       });
 
-      // After upload completes on client, wait a brief moment for the webhook to insert the DB record, then refresh
-      setTimeout(() => {
-        refreshMedia();
-      }, 1000);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Upload failed');
+      }
 
+      await refreshMedia();
     } catch (err: any) {
       console.error("Upload failed", err);
       alert(`Upload Failed: ${err?.message || 'Network error during file upload.'}`);

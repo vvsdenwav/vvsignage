@@ -19,7 +19,6 @@ import {
   Eye,
   RotateCw
 } from "lucide-react";
-import { upload } from "@vercel/blob/client";
 
 interface MobileMediaTabProps {
   mediaAssets: any[];
@@ -73,20 +72,28 @@ export function MobileMediaTab({
     setUploadProgress(`Uploading ${file.name}...`);
 
     try {
-      await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: "/api/media/upload",
-        clientPayload: selectedFolderId ? JSON.stringify({ folderId: selectedFolderId }) : undefined,
+      const formData = new FormData();
+      formData.append("file", file);
+      if (selectedFolderId) {
+        formData.append("folderId", selectedFolderId);
+      }
+
+      const res = await fetch("/api/media/upload", {
+        method: "POST",
+        body: formData,
       });
 
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Upload failed");
+      }
+
       setUploadProgress("Finalizing asset...");
-      setTimeout(async () => {
-        await refreshMedia();
-        setIsUploading(false);
-        setUploadProgress(null);
-        setToastMessage(`"${file.name}" uploaded successfully!`);
-        setTimeout(() => setToastMessage(null), 3000);
-      }, 1200);
+      await refreshMedia();
+      setIsUploading(false);
+      setUploadProgress(null);
+      setToastMessage(`"${file.name}" uploaded successfully!`);
+      setTimeout(() => setToastMessage(null), 3000);
     } catch (err: any) {
       console.error("Mobile upload error:", err);
       alert(`Upload Failed: ${err?.message || "Error uploading file"}`);

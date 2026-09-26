@@ -5,6 +5,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { logAudit } from '@/lib/audit';
 import { getOrgId } from '@/lib/tenant';
+import fs from 'fs';
+import path from 'path';
 
 export async function DELETE(request: Request, context: any) {
   try {
@@ -41,7 +43,19 @@ export async function DELETE(request: Request, context: any) {
     
     await logAudit('DELETE_MEDIA', `Deleted media ${id}`, session);
 
-    // Delete the file from Vercel Blob storage if it's hosted there
+    // Delete from Hostinger local storage if hosted locally
+    if (asset.url && asset.url.startsWith('/uploads/')) {
+      try {
+        const localFilePath = path.join(/* turbopackIgnore: true */ process.cwd(), 'public', asset.url);
+        if (fs.existsSync(localFilePath)) {
+          fs.unlinkSync(localFilePath);
+        }
+      } catch (fileErr) {
+        console.error("Failed to delete local file:", fileErr);
+      }
+    }
+
+    // Delete the file from Vercel Blob storage if it's an old legacy blob
     if (asset.url && asset.url.includes('.vercel-storage.com')) {
       try {
         await del(asset.url, {
@@ -49,7 +63,6 @@ export async function DELETE(request: Request, context: any) {
         });
       } catch (blobErr) {
         console.error("Failed to delete blob from Vercel:", blobErr);
-        // We don't throw here so that the DB deletion still succeeds even if Blob fails
       }
     }
 
